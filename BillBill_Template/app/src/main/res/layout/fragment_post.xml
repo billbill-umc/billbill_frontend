@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/post_back_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_back"
+        android:layout_marginStart="13dp"
+        app:layout_constraintTop_toTopOf="@id/post_more_iv"
+        app:layout_constraintBottom_toBottomOf="@id/post_more_iv"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    
+    <ImageView
+        android:id="@+id/post_calendar_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="52dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_post_calendar" />
+
+    <ImageView
+        android:id="@+id/post_more_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_post_more" />
+
+    <TextView
+        android:id="@+id/post_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="원터치 텐트 (카즈미/A)"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/post_title_small_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:text="10,000원  상"
+        android:textSize="14dp"
+        app:layout_constraintTop_toBottomOf="@id/post_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <ImageView
+        android:id="@+id/post_photo_iv"
+        android:layout_width="412dp"
+        android:layout_height="412dp"
+        android:src="@drawable/img_test_post_photo"
+        android:layout_marginTop="104dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+<!--    위의 Image View -> ViewPager2로 전환해야 -->
+
+    <TextView
+        android:id="@+id/post_detail_category_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:text="캠핑 · 3일 전 / 서울특별시 서대문구"
+        android:textSize="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_photo_iv"/>
+
+    <TextView
+        android:id="@+id/post_detail_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="4인용으로 사용하기 좋은 텐트 입니다~\n구성품 : 스킨, 폴대, 말뚝"
+        android:textSize="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_photo_iv"/>
+    
+    <TextView
+        android:id="@+id/post_detail_cost_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10,000원"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_detail_tv"/>
+
+    <TextView
+        android:id="@+id/post_detail_deposit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보증금 2,000원"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/post_detail_cost_tv"
+        app:layout_constraintEnd_toEndOf="@id/post_detail_cost_tv"/>
+
+    <TextView
+        android:id="@+id/post_detail_user_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:text="김캠핑"
+        android:textSize="12dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@id/post_detail_cost_tv"
+        app:layout_constraintTop_toBottomOf="@id/post_detail_cost_tv"/>
+
+    <ImageView
+        android:id="@+id/post_detail_user_iv"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/img_test_home_user"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toStartOf="@id/post_detail_user_tv"
+        app:layout_constraintTop_toTopOf="@id/post_detail_user_tv"
+        app:layout_constraintBottom_toBottomOf="@id/post_detail_user_tv"/>
+    
+    <ImageView
+        android:id="@+id/post_like_off_iv"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_post_like_off"
+        android:layout_marginStart="23dp"
+        android:layout_marginBottom="27.5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/post_borrow_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="8.13 - 8.15"
+        android:textSize="16dp"
+        android:layout_marginStart="63dp"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/post_button_iv"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="48.61dp"-->
+<!--        android:src="@drawable/ic_post_button"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="15.4dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+    
+    <TextView
+        android:id="@+id/post_button_tv"
+        android:layout_width="109.27dp"
+        android:layout_height="48.61dp"
+        android:text="빌리기"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:paddingTop="13dp"
+        android:paddingHorizontal="32.13dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="15.4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/shape_base_button"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
