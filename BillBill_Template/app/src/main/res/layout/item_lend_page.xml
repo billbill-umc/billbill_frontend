@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="376dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/lend_page_photo_iv"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/img_test_home_list_photo"/>
+
+    <TextView
+        android:id="@+id/lend_page_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:text="원터치 텐트 (카즈미/A)"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@id/lend_page_photo_iv"
+        app:layout_constraintTop_toTopOf="@id/lend_page_photo_iv"
+        />
+
+    <TextView
+        android:id="@+id/lend_page_cost_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
+        android:text="10,000원"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@id/lend_page_photo_iv"
+        app:layout_constraintBottom_toBottomOf="@id/lend_page_photo_iv" />
+
+    <TextView
+        android:id="@+id/lend_page_condition_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="8dp"
+        android:text="상"
+        android:textSize="14dp"
+        app:layout_constraintStart_toEndOf="@id/lend_page_cost_tv"
+        app:layout_constraintBottom_toBottomOf="@id/lend_page_photo_iv"/>
+
+    <TextView
+        android:id="@+id/lend_page_user_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:text="대여날짜"
+        android:textSize="12dp"
+        android:gravity="right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/lend_page_photo_iv"
+        />
+
+    <ImageView
+        android:id="@+id/lend_page_user_iv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_post_calendar"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toStartOf="@id/lend_page_user_tv"
+        app:layout_constraintTop_toTopOf="@id/lend_page_user_tv"
+        app:layout_constraintBottom_toBottomOf="@id/lend_page_user_tv"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
