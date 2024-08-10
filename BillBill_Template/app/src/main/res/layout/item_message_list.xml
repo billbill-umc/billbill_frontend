@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="380dp"
+    android:layout_width="match_parent"
     android:layout_height="88dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?attr/selectableItemBackground">
     
     <ImageView
         android:id="@+id/message_list_user_iv"
@@ -18,7 +19,7 @@
         android:id="@+id/message_list_user_tv"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:text="김캠핑"
+        android:text="사용자명"
         android:textSize="16dp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -31,7 +32,7 @@
         android:id="@+id/message_list_detail_tv"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:text="안녕하세용~"
+        android:text="최근 대화"
         android:textSize="14dp"
         android:textColor="@color/black"
         android:layout_marginStart="16dp"
@@ -43,7 +44,7 @@
         android:id="@+id/message_list_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="16dp"
-        android:text="3분 전"
+        android:text="0분 전"
         android:textSize="11dp"
         android:textColor="@color/black"
         android:layout_marginEnd="24dp"
