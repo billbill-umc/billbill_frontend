@@ -33,6 +33,7 @@
         android:layout_height="32dp"
         android:text="가까운 순"
         android:textSize="14dp"
+        android:textColor="@color/black"
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="34dp"
@@ -85,9 +86,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/shape_home_category" />
 
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/home_banner_vp"
-        android:layout_width="380dp"
+        android:layout_width="0dp"
         android:layout_height="96dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="104dp"
@@ -95,37 +97,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
-        android:id="@+id/home_banner_test_iv"
-        android:layout_width="380dp"
-        android:layout_height="96dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="104dp"
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/home_banner_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="5dp"
+        app:ci_drawable_unselected="@drawable/shape_banner_indicator_unselected"
+        app:ci_drawable="@drawable/shape_banner_indicator_selected"
+        app:ci_animator="@animator/scale_with_alpha"
+        app:layout_constraintBottom_toBottomOf="@id/home_banner_vp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/img_test_home_banner"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/home_post_list_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="48dp"
         android:orientation="vertical"
         tools:listitem="@layout/item_home_post"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_banner_vp"/>
 
-    <ImageView
-        android:id="@+id/home_add_button_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_home_add"
-        android:layout_marginEnd="24dp"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/home_add_button_fb"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginBottom="88dp"
+        android:layout_marginEnd="14dp"
+        android:src="@drawable/ic_home_add"
+        app:borderWidth="0dp"
+        app:shapeAppearanceOverlay="?attr/shapeAppearanceMediumComponent"
+        android:backgroundTint="@color/yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

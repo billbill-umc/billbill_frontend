@@ -1,13 +1,18 @@
 package com.example.billbill_template
 
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.billbill_template.databinding.ActivityMainBinding
+import com.example.billbill_template.ui.home.HomeFragment
+import com.example.billbill_template.ui.message.MessageFragment
+import com.example.billbill_template.ui.mypage.MyPageFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,15 +30,41 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_message, R.id.navigation_my_page
-            )
-        )
-        // setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        navView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    loadFragment(HomeFragment())
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_message -> {
+                    loadFragment(MessageFragment())
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_my_page -> {
+                    loadFragment(MyPageFragment())
+                    return@setOnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
+
+        // Load the default fragment
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment())
+        }
+    }
+
+    fun hideBottomNavigation() {
+        binding.navView.visibility = View.GONE
+    }
+
+    fun showBottomNavigation() {
+        binding.navView.visibility = View.VISIBLE
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .commit()
     }
 }
