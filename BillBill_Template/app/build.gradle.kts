@@ -36,9 +36,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    viewBinding{
-        enable = true
-    }
 }
 
 dependencies {
@@ -62,4 +59,5 @@ dependencies {
 
     //Indicator
     implementation("me.relex:circleindicator:2.1.6")
+
 }

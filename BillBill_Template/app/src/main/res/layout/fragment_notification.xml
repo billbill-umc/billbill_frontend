@@ -7,107 +7,195 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/notification_back"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:id="@+id/notification_back_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/ic_back"
-        android:padding="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="알림"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextView
-        android:id="@+id/new_notification_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:text="알림"
+        android:textSize="22dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="14dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/notification_back_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- New Notifications Title -->
+
+    <!-- First New Notification -->
+    <TextView
+        android:id="@+id/new_notifications_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:drawableEnd="@drawable/ic_bell"
+        android:drawablePadding="8dp"
         android:text="새로운 알림"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_back"/>
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
-    <ImageView
+    <androidx.cardview.widget.CardView
+        android:id="@+id/first_new_notification_cv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/new_notifications_title_tv">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:id="@+id/first_notification_text_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="김캠핑님이 쪽지를 보냈어요"
+                android:textColor="@color/black"
+                android:drawableEnd="@drawable/ic_gmail"
+                android:drawablePadding="8dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/first_notification_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="방금"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Second New Notification -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/second_new_notification_cv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/first_new_notification_cv">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:id="@+id/second_notification_text_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="김공구님이 내 물건을 찜했어요"
+                android:textColor="@color/black"
+                android:drawableEnd="@drawable/ic_love"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/second_notification_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3분 전"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Previous Notifications Title -->
+    <TextView
+        android:id="@+id/previous_notifications_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_bell"
-        app:layout_constraintStart_toEndOf="@+id/new_notification_tv"
-        app:layout_constraintTop_toTopOf="@+id/new_notification_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/new_notification_tv"/>
-
-    <TextView
-        android:id="@+id/new1"
-        android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:text="     김캠핑님이 쪽지를 보냈어요"
-        android:background="@drawable/rounded_border"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity=""
-        android:drawablePadding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/new_notification_tv"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-
-    <TextView
-        android:id="@+id/new2"
-        android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:layout_marginTop="15dp"
-        android:text="     김캠핑님이 쪽지를 보냈어요"
-        android:background="@drawable/rounded_border"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity=""
-        android:drawablePadding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/new1"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/before_notification_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
         android:text="이전 알림"
-        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new2"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_clock"
-        app:layout_constraintStart_toEndOf="@+id/before_notification_tv"
-        app:layout_constraintTop_toTopOf="@+id/before_notification_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/before_notification_tv"/>
-
-    <TextView
-        android:id="@+id/before1"
-        android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:text="     김캠핑님이 쪽지를 보냈어요"
-        android:background="@drawable/rounded_border"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity=""
+        android:drawableEnd="@drawable/ic_clock"
         android:drawablePadding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/before_notification_tv"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/second_new_notification_cv" />
 
+    <!-- First Previous Notification -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/first_previous_notification_cv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/previous_notifications_title_tv">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:id="@+id/first_previous_notification_text_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오렌지님이 내 물건을 찜했어요"
+                android:textColor="@color/black"
+                android:drawableEnd="@drawable/ic_love"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/first_previous_notification_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2일 전"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

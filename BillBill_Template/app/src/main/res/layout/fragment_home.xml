@@ -80,7 +80,7 @@
         android:paddingHorizontal="16dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/yellow"
+        android:textColor="#ffffbb33"
         android:backgroundTint="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

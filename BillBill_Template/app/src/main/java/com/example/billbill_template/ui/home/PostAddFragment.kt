@@ -19,12 +19,14 @@ class PostAddFragment : Fragment() {
         _binding = FragmentPostAddBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+
         // BottomNavigationView 숨기기
         (activity as? MainActivity)?.hideBottomNavigation()
 
         binding.postAddBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment()).commitAllowingStateLoss()
+                .replace(R.id.container, HomeFragment())
+                .commitAllowingStateLoss()
         }
 
 //        binding.postAddPhotoRv.setOnClickListener {  }

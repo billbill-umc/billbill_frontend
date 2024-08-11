@@ -1,12 +1,9 @@
 package com.example.billbill_template.ui.home
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +11,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentHomeBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.billbill_template.ui.search.NotificationFragment
+import com.example.billbill_template.ui.search.SearchFragment
 import com.google.gson.Gson
-import java.util.Timer
-import kotlin.concurrent.scheduleAtFixedRate
 
 class HomeFragment : Fragment() {
 
@@ -36,6 +32,18 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        binding.homeBarterButtonIv.setOnClickListener { // 물물교환 페이지 클릭 리스너
+            navigateToHomeSwapFragment()
+        }
+
+        binding.homeSearchIv.setOnClickListener {
+            navigateToSearchFragment() // 검색 페이지로 전환
+        }
+
+        binding.homeAlarmIv.setOnClickListener {
+            navigateToNotificationFragment() // 알림 페이지로 전환
+        }
+
         //post
         posts.apply {
             add(Post("사과", "원터치 텐트 (카즈미/A)", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
@@ -51,9 +59,17 @@ class HomeFragment : Fragment() {
             add(Post("사과", "보이저3 촬영용 드론2", 3 , R.drawable.img_test_post_drone, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
         }
 
+
+
         val postRVAdapter = PostRVAdapter(posts)
         binding.homePostListRv.adapter = postRVAdapter
         binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
+            override fun onItemClick(post: Post) {
+                changePostFragment(post)
+            }
+        })
 
         postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
             override fun onItemClick(post: Post) {
@@ -101,7 +117,29 @@ class HomeFragment : Fragment() {
 //            textView.text = it
 //        }
 
+
         return root
+    }
+
+    private fun navigateToHomeSwapFragment() { // 물물교환 페이지로 이동하는 함수
+        (activity as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.container, HomeSwapFragment())
+            .addToBackStack(null) // 백스택에 추가하여 뒤로 가기 버튼으로 돌아올 수 있도록 함
+            .commit()
+    }
+
+    private fun navigateToSearchFragment() {
+        (activity as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.container, SearchFragment()) // R.id.container는 Fragment를 담고 있는 FrameLayout의 ID입니다.
+            .addToBackStack(null) // 뒤로 가기 버튼을 누르면 이전 Fragment로 돌아올 수 있도록 백스택에 추가
+            .commit()
+    }
+
+    private fun navigateToNotificationFragment() {
+        (activity as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.container, NotificationFragment()) // R.id.container는 Fragment를 담고 있는 FrameLayout의 ID입니다.
+            .addToBackStack(null) // 뒤로 가기 버튼을 누르면 이전 Fragment로 돌아올 수 있도록 백스택에 추가
+            .commit()
     }
 
     override fun onDestroyView() {
@@ -118,6 +156,8 @@ class HomeFragment : Fragment() {
                     val postJson = gson.toJson(post)
                     putString("post", postJson)
                 }
-            }).commitAllowingStateLoss()
+            })
+            .addToBackStack(null) // 백스택에 추가하여 뒤로 가기 버튼으로 돌아올 수 있도록 함
+            .commitAllowingStateLoss()
     }
 }

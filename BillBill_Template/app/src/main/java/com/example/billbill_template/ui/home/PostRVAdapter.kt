@@ -15,10 +15,10 @@ class PostRVAdapter (private val posts : ArrayList<Post>) : RecyclerView.Adapter
             binding.homePostPhotoIv.setImageResource(post.postImage!!)
             binding.homePostUserIv.setImageResource(post.authorPhoto!!)
             binding.homePostConditionTv.text = when (post.itemCondition) {
-                    0 -> "하"
-                    1 -> "중"
-                    2 -> "상"
-                    3 -> "최상"
+                    0 -> "상태: 하"
+                    1 -> "상태: 중"
+                    2 -> "상태: 상"
+                    3 -> "상태: 최상"
                 else -> { "?" }
             }
         }

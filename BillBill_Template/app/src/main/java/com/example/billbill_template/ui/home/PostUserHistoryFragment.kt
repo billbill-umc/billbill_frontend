@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.billbill_template.MainActivity
-import com.example.billbill_template.databinding.FragmentPostBinding
 import com.example.billbill_template.databinding.FragmentPostUserHistoryBinding
 
 class PostUserHistoryFragment : Fragment() {
