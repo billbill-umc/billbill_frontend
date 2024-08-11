@@ -8,14 +8,13 @@
 
     <ImageView
         android:id="@+id/swap_icon_back_iv"
-        android:layout_width="48dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="58dp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/ic_back"
-        />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/swap_text_tv"
@@ -33,9 +32,8 @@
         android:id="@+id/swap_search_iv"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="48dp"
         android:layout_marginEnd="50dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swap_text_tv"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_home_search" />
 
@@ -43,9 +41,8 @@
         android:id="@+id/swap_alarm_iv"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="48dp"
         android:layout_marginEnd="4dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swap_text_tv"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_home_alarm" />
 
@@ -58,9 +55,9 @@
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="34dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="25dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swap_text_tv"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/shape_home_category" />
 
@@ -81,39 +78,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/swap_category_sort_tv"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swap_text_tv"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="5"
         tools:listitem="@layout/item_swap_category" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/swap_banner_vp"
-        android:layout_width="380dp"
+        android:layout_width="0dp"
         android:layout_height="96dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="144dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/swap_category_sort_tv"/>
 
-    <ImageView
-        android:id="@+id/swap_banner_test_iv"
-        android:layout_width="380dp"
-        android:layout_height="96dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="144dp"
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/swap_banner_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="5dp"
+        app:ci_drawable_unselected="@drawable/shape_banner_indicator_unselected"
+        app:ci_drawable="@drawable/shape_banner_indicator_selected"
+        app:ci_animator="@animator/scale_with_alpha"
+        app:layout_constraintBottom_toBottomOf="@id/swap_banner_vp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/img_test_home_banner"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/swap_post_list_rv"
@@ -122,7 +120,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:orientation="vertical"
-        tools:listitem="@layout/item_home_post"
+        tools:listitem="@layout/item_swap_home_post"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/swap_banner_vp"/>
