@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <ImageView
+        android:id="@+id/home_icon_menu_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/ic_home_menu"
+        />
+
+    <TextView
+        android:id="@+id/home_search_Text_tv"
+        android:layout_width="157dp"
+        android:layout_height="24dp"
+        android:textSize="16dp"
+        android:text="검색어를 입력해주세요"
+        app:layout_constraintStart_toEndOf="@id/home_icon_menu_iv"
+        app:layout_constraintTop_toTopOf="@id/home_icon_menu_iv"
+        app:layout_constraintBottom_toBottomOf="@id/home_icon_menu_iv" />
+
+    <ImageView
+        android:id="@+id/home_search_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_home_search" />
+
+    <ImageView
+        android:id="@+id/home_change_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="52dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_home_change" />
+
+    <ImageView
+        android:id="@+id/home_alarm_iv"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_home_alarm" />
+
+    <TextView
+        android:id="@+id/home_category_sort_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="가까운 순"
+        android:textSize="14dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="34dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/shape_home_category" />
+    
+    <ImageView
+        android:id="@+id/home_category_more_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_home_category_more"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="@id/home_category_sort_tv"
+        app:layout_constraintTop_toTopOf="@id/home_category_sort_tv"
+        app:layout_constraintBottom_toBottomOf="@id/home_category_sort_tv"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_category_rv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/home_category_sort_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_home_category" />
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="32dp"-->
+<!--        android:text="전체"-->
+<!--        android:textSize="14dp"-->
+<!--        android:gravity="center"-->
+<!--        android:paddingStart="16dp"-->
+<!--        android:paddingEnd="16dp"-->
+<!--        android:backgroundTint="@color/black"-->
+<!--        android:textColor="@color/yellow"-->
+<!--        app:layout_constraintTop_toTopOf="home_category_rv"-->
+<!--        app:layout_constraintStart_toStartOf="home_category_rv"-->
+<!--        android:background="@drawable/shape_home_category" />-->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/home_banner_vp"
+        android:layout_width="380dp"
+        android:layout_height="96dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="144dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/home_banner_test_iv"
+        android:layout_width="380dp"
+        android:layout_height="96dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="144dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/img_test_home_banner"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_post_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        tools:listitem="@layout/item_home_post"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_banner_vp"/>
+
+    <ImageView
+        android:id="@+id/home_add_button_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_home_add"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="88dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
