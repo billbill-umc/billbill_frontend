@@ -3,4 +3,5 @@
     <string name="title_home">홈</string>
     <string name="title_message">쪽지</string>
     <string name="title_my_page">마이페이지</string>
+    <string name="hint_phone_number"> - 를 포함한 전화번호를 입력해주세요</string>
 </resources>

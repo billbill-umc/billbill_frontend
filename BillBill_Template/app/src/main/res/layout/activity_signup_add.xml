@@ -27,7 +27,7 @@
         android:id="@+id/signup_text_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="아이디"
+        android:text="닉네임"
         android:layout_marginTop="20dp"
         android:layout_marginStart="4dp"
         android:textColor="@color/black"
@@ -39,14 +39,15 @@
         android:id="@+id/signup_input_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="아이디를 입력해주세요"
-        android:inputType="text"
+        android:hint="2~24자 이내로 입력해주세요"
+        android:inputType="textPersonName"
         app:layout_constraintTop_toBottomOf="@id/signup_text_id"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
     <TextView
+        android:id="@+id/signup_id_check"
         android:layout_width="80dp"
         android:layout_height="30dp"
         android:text="중복확인"
@@ -73,7 +74,7 @@
         android:id="@+id/signup_input_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="8~15자리 영문, 숫자, 특수문자 조합"
+        android:hint="12자리 이상 소, 대문자, 숫자, 특수문자 조합"
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/signup_text_pw"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,12 +96,14 @@
         android:id="@+id/signup_input_pn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="전화번호를 입력해주세요"
-        android:inputType="text"
+        android:hint="@string/hint_phone_number"
+        android:inputType="number"
+        android:digits="0123456789-"
         app:layout_constraintTop_toBottomOf="@id/signup_text_pn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
+
 
     <TextView
         android:id="@+id/signup_btn_su"

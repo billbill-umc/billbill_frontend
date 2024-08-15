@@ -20,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
 
         // 3초 딜레이 후 LoginActivity 시작
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, com.example.billbill_template.ui.login.LoginActivity::class.java))
+            startActivity(Intent(this, com.example.billbill_template.Login.signin.LoginActivity::class.java))
             finish()
         }, 3000)
     }
