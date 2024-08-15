@@ -34,10 +34,5 @@ class PostEditFragment : Fragment() {
 
         return root
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // BottomNavigationView 다시 보이기
-        (activity as? MainActivity)?.showBottomNavigation()
-        _binding = null
-    }
+
 }

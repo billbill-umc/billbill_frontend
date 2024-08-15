@@ -45,6 +45,9 @@ class PostFragment : Fragment(){
 
 
         binding.postBackIv.setOnClickListener {
+            // 홈으로 돌아갈 때 BottomNavigationView 보이기
+            (activity as? MainActivity)?.showBottomNavigation()
+
             (context as MainActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment()).commitAllowingStateLoss()
         }
@@ -88,12 +91,7 @@ class PostFragment : Fragment(){
         return root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // BottomNavigationView 다시 보이기
-        (activity as? MainActivity)?.showBottomNavigation()
-        _binding = null
-    }
+
 
     inner class PopupListener : PopupMenu.OnMenuItemClickListener {
         override fun onMenuItemClick(item: MenuItem?): Boolean {
