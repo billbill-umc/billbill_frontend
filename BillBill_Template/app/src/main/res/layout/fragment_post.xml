@@ -38,7 +38,7 @@
         android:id="@+id/post_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:text="원터치 텐트 (카즈미/A)"
+        android:text="제목"
         android:textStyle="bold"
         android:textSize="16dp"
         android:textColor="@color/black"
@@ -75,6 +75,7 @@
                 android:id="@+id/post_photo_vp"
                 android:layout_width="412dp"
                 android:layout_height="412dp"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -84,6 +85,7 @@
                 android:id="@+id/post_photo_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:visibility="visible"
                 app:ci_drawable_unselected="@drawable/shape_photo_indicator_unselected"
                 app:ci_drawable="@drawable/shape_photo_indicator_selected"
                 app:ci_animator="@animator/scale_with_alpha"
@@ -92,14 +94,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/post_photo_vp" />
 
-<!--            <ImageView-->
-<!--                android:id="@+id/post_photo_iv"-->
-<!--                android:layout_width="412dp"-->
-<!--                android:layout_height="412dp"-->
-<!--                android:src="@drawable/img_test_post_photo"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/post_photo_iv"-->
+            <!--                android:layout_width="412dp"-->
+            <!--                android:layout_height="412dp"-->
+            <!--                android:src="@drawable/img_test_post_photo"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <TextView
                 android:id="@+id/post_detail_category_tv"
@@ -206,15 +208,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-<!--    <ImageView-->
-<!--        android:id="@+id/post_button_iv"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="48.61dp"-->
-<!--        android:src="@drawable/ic_post_button"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:layout_marginBottom="15.4dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/post_button_iv"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="48.61dp"-->
+    <!--        android:src="@drawable/ic_post_button"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:layout_marginBottom="15.4dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
     <TextView
         android:id="@+id/post_button_tv"

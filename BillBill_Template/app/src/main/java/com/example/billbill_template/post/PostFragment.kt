@@ -1,4 +1,4 @@
-package com.example.billbill_template.ui.home
+package com.example.billbill_template.post
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +13,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostBinding
+import com.example.billbill_template.ui.home.HomeFragment
 import com.example.billbill_template.ui.message.Chatting
 import com.example.billbill_template.ui.message.ChattingActivity
 import com.google.gson.Gson
+import retrofit2.http.POST
 
 class PostFragment : Fragment(){
 
@@ -42,6 +44,10 @@ class PostFragment : Fragment(){
 
         //Indicator
         binding.postPhotoIndicator.setViewPager(binding.postPhotoVp)
+
+
+//        binding.postTitleTv.setText(POST.)
+//        val title:String? = intent.getStringExtra("")
 
 
         binding.postBackIv.setOnClickListener {
