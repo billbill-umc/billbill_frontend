@@ -1,5 +1,7 @@
 package com.example.billbill_template.ui.home
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentHomeBinding
+import com.example.billbill_template.post.OldVersionPost
+import com.example.billbill_template.post.PostAddFragment
+import com.example.billbill_template.post.PostFragment
 import com.example.billbill_template.ui.search.NotificationFragment
 import com.example.billbill_template.ui.search.SearchFragment
 import com.google.gson.Gson
@@ -20,8 +25,10 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val posts = ArrayList<Post>()
+    private val oldVersionPosts = ArrayList<OldVersionPost>()
     private val categorys = ArrayList<String>()
+
+    private var categoryMoreVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,6 +38,7 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
 
         binding.homeBarterButtonIv.setOnClickListener { // 물물교환 페이지 클릭 리스너
             navigateToHomeSwapFragment()
@@ -44,36 +52,44 @@ class HomeFragment : Fragment() {
             navigateToNotificationFragment() // 알림 페이지로 전환
         }
 
-        //post
-        posts.apply {
-            add(Post("사과", "원터치 텐트 (카즈미/A)", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("오렌지", "도자기 컵", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("파인애플", "IWC 손목시계", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("오렌지", "Kodak Pony 828", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("사과", "보이저3 촬영용 드론", 3 , R.drawable.img_test_post_drone, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("파인애플", "IWC 손목시계2", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("사과", "원터치 텐트 (카즈미/A)2", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("오렌지", "도자기 컵2", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("파인애플", "IWC 손목시계3", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("오렌지", "Kodak Pony 828 2", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("사과", "보이저3 촬영용 드론2", 3 , R.drawable.img_test_post_drone, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
+        binding.homeAddButtonFb.setOnClickListener { //게시물 작성 페이지로 전환
+            (context as MainActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.container, PostAddFragment()).commitAllowingStateLoss()
+        }
+
+        binding.homeCategoryMoreIv.setOnClickListener { // 정렬 순서 더보기
+            if(categoryMoreVisible) {
+                binding.homeCategorySortLl.visibility = View.GONE
+                categoryMoreVisible = false
+            } else {
+                binding.homeCategorySortLl.visibility = View.VISIBLE
+                categoryMoreVisible = true
+            }
         }
 
 
+        //post
+        oldVersionPosts.apply {
+            add(OldVersionPost("사과", "원터치 텐트 (카즈미/A)", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
+            add(OldVersionPost("오렌지", "도자기 컵", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
+            add(OldVersionPost("파인애플", "IWC 손목시계", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
+            add(OldVersionPost("오렌지", "Kodak Pony 828", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
+        }
 
-        val postRVAdapter = PostRVAdapter(posts)
-        binding.homePostListRv.adapter = postRVAdapter
+
+        val homePostRVAdapter = HomePostRVAdapter(oldVersionPosts)
+        binding.homePostListRv.adapter = homePostRVAdapter
         binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
-            override fun onItemClick(post: Post) {
-                changePostFragment(post)
+        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+            override fun onItemClick(oldVersionPost: OldVersionPost) {
+                changePostFragment(oldVersionPost)
             }
         })
 
-        postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
-            override fun onItemClick(post: Post) {
-                changePostFragment(post)
+        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+            override fun onItemClick(oldVersionPost: OldVersionPost) {
+                changePostFragment(oldVersionPost)
             }
         })
 
@@ -104,13 +120,6 @@ class HomeFragment : Fragment() {
             override fun onItemClick(name: String) {
             }
         })
-
-
-        //postAdd
-        binding.homeAddButtonFb.setOnClickListener {
-            (context as MainActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PostAddFragment()).commitAllowingStateLoss()
-        }
 
 //        val textView: TextView = binding.textHome
 //        homeViewModel.text.observe(viewLifecycleOwner) {
@@ -147,13 +156,17 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun changePostFragment(post: Post) {
+    private fun changePostFragment(oldVersionPost: OldVersionPost) {
+
+//        val intent = Intent(context, PostFragment::class.java)
+//        intent.putExtra("post",oldVersionPost.itemName)
+//        //구현할 때에는 postId 값 넣기
 
         (context as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.container, PostFragment().apply {
                 arguments = Bundle().apply {
                     val gson = Gson()
-                    val postJson = gson.toJson(post)
+                    val postJson = gson.toJson(oldVersionPost)
                     putString("post", postJson)
                 }
             })

@@ -138,4 +138,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <LinearLayout
+        android:id="@+id/home_category_sort_ll"
+        android:layout_width="108dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/home_category_sort_tv"
+        app:layout_constraintStart_toStartOf="@id/home_category_sort_tv"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/home_category_sort_1_tv"
+            android:layout_width="105dp"
+            android:layout_height="32dp"
+            android:text="낮은 가격 순"
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/shape_home_category"/>
+
+        <TextView
+            android:id="@+id/home_category_sort_2_tv"
+            android:layout_width="105dp"
+            android:layout_height="32dp"
+            android:text="높은 가격 순"
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@drawable/shape_home_category"/>
+
+        <TextView
+            android:id="@+id/home_category_sort_3_tv"
+            android:layout_width="105dp"
+            android:layout_height="32dp"
+            android:text="최신 순"
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@drawable/shape_home_category"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
