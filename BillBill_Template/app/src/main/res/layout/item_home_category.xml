@@ -25,6 +25,7 @@
             android:textColor="@color/black"
             android:gravity="center"
             android:paddingHorizontal="16dp"
+            android:background="@drawable/shape_home_category"
             />
 
     </androidx.cardview.widget.CardView>

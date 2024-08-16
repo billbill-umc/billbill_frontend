@@ -2,6 +2,7 @@ package com.example.billbill_template.Login.signup
 
 import com.example.billbill_template.post.CreatePostRequest
 import com.example.billbill_template.post.CreatePostResponse
+import com.example.billbill_template.post.GetCategoryManifestResponse
 import com.example.billbill_template.post.GetPostByIdResponse
 import com.example.billbill_template.post.GetPostsResponse
 import retrofit2.Call
@@ -36,4 +37,7 @@ interface ApiService {
 
     @POST("/posts")
     fun createPost(@Body createPostRequest: CreatePostRequest) : Call<CreatePostResponse>
+
+    @GET("/manifest/category")
+    fun getCategoryManifest() : Call<GetCategoryManifestResponse>
 }

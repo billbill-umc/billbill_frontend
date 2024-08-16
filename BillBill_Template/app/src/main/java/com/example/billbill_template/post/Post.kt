@@ -18,7 +18,7 @@ data class GetPostsPosts(
     val description: String,
     val itemCondition: String,
     val thumbnail: String,
-    val area: Int, //Int 맞는지 확인 필요
+    val area: Int?,
     val price: Int,
     val deposit: Int
 )
@@ -52,7 +52,9 @@ data class GetPostByIdPost(
     val area: Int,
     val dateBegin: Int,
     val dateEnd: Int,
-    val isLent: Boolean
+    val isLent: Boolean,
+    val isFavorite: Boolean,
+    val createAt: Int
 )
 data class PostAuthor(
     val id: Int,
@@ -134,10 +136,45 @@ data class DeletePostImageResponse(
 )
 
 
+
+
 //게시글 찜하기
 data class AddPostFavoriteResponse(
     val success: Boolean,
     val code: String?,
     val message: String?,
     val data: Any?
+)
+
+
+
+
+//지역 Manifest 조회
+data class GetAreaManifestResponse(
+    val version: String,
+    val area: List<GetAreaSi>
+)
+data class GetAreaSi( //시도
+    val name: String,
+    val code: Int,
+    val childArea: List<GetAreaGu>
+)
+data class GetAreaGu( //시군구
+    val name: String,
+    val code: Int,
+    val childArea: List<GetAreaDong>
+)
+data class GetAreaDong( //읍면동
+    val name: String,
+    val code: Int
+)
+
+
+//게시글 카테고리 Manifest 조회
+data class GetCategoryManifestResponse(
+    val categories: List<GetCategory>
+)
+data class GetCategory(
+    val id: Int,
+    val name: String
 )
