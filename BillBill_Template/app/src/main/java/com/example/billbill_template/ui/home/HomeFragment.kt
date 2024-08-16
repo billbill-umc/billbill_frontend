@@ -1,33 +1,32 @@
 package com.example.billbill_template.ui.home
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentHomeBinding
-import com.example.billbill_template.post.OldVersionPost
+import com.example.billbill_template.post.GetCategoryManifestResponse
+import com.example.billbill_template.post.GetPostsData
 import com.example.billbill_template.post.PostAddFragment
 import com.example.billbill_template.post.PostFragment
 import com.example.billbill_template.ui.search.NotificationFragment
 import com.example.billbill_template.ui.search.SearchFragment
 import com.google.gson.Gson
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HomeView {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val oldVersionPosts = ArrayList<OldVersionPost>()
-    private val categorys = ArrayList<String>()
-
+    private lateinit var getpostsAdapter : HomePostRVAdapter
+    private lateinit var homeCategoryAdapter : HomeCategoryRVAdapter
+    //    private val categorys = ArrayList<String>()
     private var categoryMoreVisible = false
 
     override fun onCreateView(
@@ -68,30 +67,22 @@ class HomeFragment : Fragment() {
         }
 
 
-        //post
-        oldVersionPosts.apply {
-            add(OldVersionPost("사과", "원터치 텐트 (카즈미/A)", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(OldVersionPost("오렌지", "도자기 컵", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(OldVersionPost("파인애플", "IWC 손목시계", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(OldVersionPost("오렌지", "Kodak Pony 828", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-        }
 
-
-        val homePostRVAdapter = HomePostRVAdapter(oldVersionPosts)
-        binding.homePostListRv.adapter = homePostRVAdapter
-        binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
-            override fun onItemClick(oldVersionPost: OldVersionPost) {
-                changePostFragment(oldVersionPost)
-            }
-        })
-
-        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
-            override fun onItemClick(oldVersionPost: OldVersionPost) {
-                changePostFragment(oldVersionPost)
-            }
-        })
+//        val homePostRVAdapter = HomePostRVAdapter(posts)
+//        binding.homePostListRv.adapter = homePostRVAdapter
+//        binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//
+//        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+//            override fun onItemClick(post: GetPostsPosts) {
+//                changePostFragment(post)
+//            }
+//        })
+//
+//        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+//            override fun onItemClick(oldVersionPost: GetPostsPosts) {
+//                changePostFragment(oldVersionPost)
+//            }
+//        })
 
         val bannerAdapter = HomeBannerVPAdapter(this)
         bannerAdapter.addFragment(HomeBannerFragment(R.drawable.img_test_home_banner))
@@ -102,30 +93,6 @@ class HomeFragment : Fragment() {
 
 //        //Indicator
         binding.homeBannerIndicator.setViewPager(binding.homeBannerVp)
-
-//        //category
-        categorys.apply {
-            add("전체")
-            add("캠핑")
-            add("공구")
-            add("스포츠")
-            add("기타")
-        }
-
-        val homeCategoryRVAdapter = HomeCategoryRVAdapter(categorys)
-        binding.homeCategoryRv.adapter = homeCategoryRVAdapter
-        binding.homeCategoryRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        homeCategoryRVAdapter.setHomeCategoryClickListener(object : HomeCategoryRVAdapter.HomeCategoryItemClickListener{
-            override fun onItemClick(name: String) {
-            }
-        })
-
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-
 
         return root
     }
@@ -156,21 +123,52 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun changePostFragment(oldVersionPost: OldVersionPost) {
+    override fun onStart() {
+        super.onStart()
+        val homeService = HomeService()
+        homeService.setPostView(this)
+        homeService.getPosts(requireContext())
+        homeService.getCategories(requireContext())
+    }
 
-//        val intent = Intent(context, PostFragment::class.java)
-//        intent.putExtra("post",oldVersionPost.itemName)
-//        //구현할 때에는 postId 값 넣기
+    private fun changePostFragment(postId: Int) {
 
         (context as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.container, PostFragment().apply {
                 arguments = Bundle().apply {
-                    val gson = Gson()
-                    val postJson = gson.toJson(oldVersionPost)
-                    putString("post", postJson)
+                    putInt("postId", postId)
                 }
             })
             .addToBackStack(null) // 백스택에 추가하여 뒤로 가기 버튼으로 돌아올 수 있도록 함
             .commitAllowingStateLoss()
+    }
+
+    override fun onGetPostsSuccess(result: GetPostsData) {
+        getpostsAdapter = HomePostRVAdapter(result)
+        binding.homePostListRv.adapter = getpostsAdapter
+        getpostsAdapter.setPostItemClickListener(object : HomePostRVAdapter.PostItemClickListener {
+            override fun onItemClick(id: Int) {
+                changePostFragment(id)
+                Log.d("HomeFragment", "click item id : ${id}")
+            }
+        })
+        Log.d("HomeFragment", "Get Posts Success")
+    }
+
+    override fun onGetPostsFailure(message: String) {
+        Log.d("HomeFragment", "Get Posts failure - ${message}")
+    }
+
+    override fun onGetCategoriesSuccess(result: GetCategoryManifestResponse) {
+        homeCategoryAdapter= HomeCategoryRVAdapter(result)
+        binding.homeCategoryRv.adapter = homeCategoryAdapter
+        homeCategoryAdapter.setHomeCategoryClickListener(object : HomeCategoryRVAdapter.HomeCategoryItemClickListener{
+            override fun onItemClick(name: String) { }
+        })
+        Log.d("HomeFragment", "Get Categories Success")
+    }
+
+    override fun onGetCategoriesFailure(message: String) {
+        Log.d("HomeFragment", "Get Categories failure - ${message}")
     }
 }

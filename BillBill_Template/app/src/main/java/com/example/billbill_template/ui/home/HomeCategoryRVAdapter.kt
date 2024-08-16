@@ -2,15 +2,22 @@ package com.example.billbill_template.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.ItemHomeCategoryBinding
+import com.example.billbill_template.post.GetCategory
+import com.example.billbill_template.post.GetCategoryManifestResponse
 
-class HomeCategoryRVAdapter(private val categoryList: ArrayList<String>) :
+class HomeCategoryRVAdapter(val result: GetCategoryManifestResponse) :
     RecyclerView.Adapter<HomeCategoryRVAdapter.ViewHolder>() {
 
     private var selectedPosition = 0
+
+    companion object {
+        var categoryList: MutableList<String> = mutableListOf()
+    }
 
     interface HomeCategoryItemClickListener {
         fun onItemClick(name: String)
@@ -24,9 +31,9 @@ class HomeCategoryRVAdapter(private val categoryList: ArrayList<String>) :
 
     inner class ViewHolder(val binding: ItemHomeCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+            val name : TextView = binding.homeCategoryItemTv
 
-        fun bind(category: String, isSelected: Boolean) {
-            binding.homeCategoryItemTv.text = category
+        fun bind(category: GetCategory, isSelected: Boolean) {
             if (isSelected) {
                 binding.homeCategoryCardView.setCardBackgroundColor(
                     ContextCompat.getColor(binding.root.context, android.R.color.black)
@@ -46,30 +53,32 @@ class HomeCategoryRVAdapter(private val categoryList: ArrayList<String>) :
             }
 
             binding.root.setOnClickListener {
-                // 선택된 항목이 다시 클릭되면 선택 취소
-                if (selectedPosition == adapterPosition) {
-                    selectedPosition = -1
-                    notifyItemChanged(adapterPosition)
-                } else {
+                if (selectedPosition != adapterPosition) {
                     val previousPosition = selectedPosition
                     selectedPosition = adapterPosition
                     notifyItemChanged(previousPosition)
                     notifyItemChanged(selectedPosition)
                 }
-                itemClickListener.onItemClick(category)
+                itemClickListener.onItemClick(result.categories[position].name)
             }
         }
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeCategoryRVAdapter.ViewHolder {
         val binding = ItemHomeCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(categoryList[position], position == selectedPosition)
-    }
+    override fun getItemCount(): Int = 14 //현재 14개. '전체' 추가시 +1
 
-    override fun getItemCount(): Int = categoryList.size
+    override fun onBindViewHolder(holder: HomeCategoryRVAdapter.ViewHolder, position: Int) {
+        holder.bind(result.categories[position], position == selectedPosition)
+        if (result.categories[position].id < 1000) {
+            if (!categoryList.contains(result.categories[position].name)) {
+                categoryList.add(result.categories[position].name)
+            }
+            holder.name.text = result.categories[position].name
+        }
+    }
 }

@@ -2,22 +2,29 @@ package com.example.billbill_template.post
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.example.billbill_template.Login.signup.RetrofitClient
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostBinding
+import com.example.billbill_template.ui.home.HomeCategoryRVAdapter.Companion.categoryList
 import com.example.billbill_template.ui.home.HomeFragment
 import com.example.billbill_template.ui.message.Chatting
 import com.example.billbill_template.ui.message.ChattingActivity
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.POST
+import java.util.Date
 
 class PostFragment : Fragment(){
 
@@ -41,13 +48,65 @@ class PostFragment : Fragment(){
         binding.postPhotoVp.adapter = photoAdpater
         binding.postPhotoVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL //좌우 스크롤
 
-
         //Indicator
         binding.postPhotoIndicator.setViewPager(binding.postPhotoVp)
 
 
+
+
+
+
+        val postId = arguments?.getInt("postId")
 //        binding.postTitleTv.setText(POST.)
-//        val title:String? = intent.getStringExtra("")
+        RetrofitClient.instance.getPostById(postId?: 0).enqueue(object : retrofit2.Callback<GetPostByIdResponse> {
+            override fun onResponse(
+                call: Call<GetPostByIdResponse>,
+                response: Response<GetPostByIdResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val postDetail = response.body()?.data?.post?.firstOrNull()
+                    binding.postTitleTv.text = postDetail?.itemName
+                    binding.postDetailTv.text = postDetail?.description
+                    binding.postDetailCostTv.text = "${postDetail?.price}원"
+                    binding.postDetailDepositTv.text = "보증금 ${postDetail?.deposit}원"
+                    binding.postDetailUserTv.text = postDetail?.author?.name
+                    binding.postDetailUserIv.setImageResource(postDetail?.author?.avatar?.toInt()!!)
+
+                    val condition = when(postDetail?.itemCondition) {
+                        "NEW" -> "최상"
+                        "HIGH" -> "상"
+                        "MIDDLE" -> "중"
+                        "LOW" -> "하"
+                        else -> "?"
+                    }
+                    binding.postTitleSmallTv.text = "${postDetail?.price}원 ${condition}"
+
+                    var category = "전체"
+                    for(i in 1..categoryList.size) {
+                        if (i == postDetail?.category) {
+                            category = categoryList[i - 1]
+                        }
+                    }
+                    val now = System.currentTimeMillis() / 1000
+                    val created = postDetail?.createAt!!
+                    val day = (now - created) / 86400
+
+                    binding.postDetailCategoryTv.text = "${category} · ${day}일 전 / 서울특별시 강남구"
+                    Log.d("PostFragment", "게시물을 성공적으로 불러왔습니다.")
+                } else {
+                    Log.e("PostFragment", "게시물 불러오기 실패 - 오류: ${response.code()} - ${response.message()}")
+                    Toast.makeText(context, "게시물을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<GetPostByIdResponse>, t: Throwable) {
+                t.printStackTrace()
+                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
+
 
 
         binding.postBackIv.setOnClickListener {
