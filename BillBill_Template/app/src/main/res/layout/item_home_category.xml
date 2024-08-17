@@ -18,14 +18,15 @@
         <TextView
             android:id="@+id/home_category_item_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_gravity="center"
             android:text="카테고리명"
             android:textSize="14dp"
             android:textColor="@color/black"
             android:gravity="center"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"/>
+            android:background="@drawable/shape_home_category"
+            />
 
     </androidx.cardview.widget.CardView>
 

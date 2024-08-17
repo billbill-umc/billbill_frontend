@@ -1,4 +1,4 @@
-package com.example.billbill_template.ui.home
+package com.example.billbill_template.post
 
 import android.os.Bundle
 import android.view.LayoutInflater

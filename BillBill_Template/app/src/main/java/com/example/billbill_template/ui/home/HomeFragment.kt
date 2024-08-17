@@ -1,6 +1,8 @@
 package com.example.billbill_template.ui.home
 
+import PostAddFragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,135 +13,101 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentHomeBinding
+import com.example.billbill_template.post.GetCategoryManifestResponse
+import com.example.billbill_template.post.GetPostsData
+import com.example.billbill_template.post.PostFragment
 import com.example.billbill_template.ui.search.NotificationFragment
 import com.example.billbill_template.ui.search.SearchFragment
 import com.google.gson.Gson
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HomeView {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val posts = ArrayList<Post>()
-    private val categorys = ArrayList<String>()
+    private lateinit var getpostsAdapter : HomePostRVAdapter
+    private lateinit var homeCategoryAdapter : HomeCategoryRVAdapter
+    private var categoryMoreVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.homeBarterButtonIv.setOnClickListener { // 물물교환 페이지 클릭 리스너
+        binding.homeBarterButtonIv.setOnClickListener {
             navigateToHomeSwapFragment()
         }
 
         binding.homeSearchIv.setOnClickListener {
-            navigateToSearchFragment() // 검색 페이지로 전환
+            navigateToSearchFragment()
         }
 
         binding.homeAlarmIv.setOnClickListener {
-            navigateToNotificationFragment() // 알림 페이지로 전환
+            navigateToNotificationFragment()
         }
 
-        //post
-        posts.apply {
-            add(Post("사과", "원터치 텐트 (카즈미/A)", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("오렌지", "도자기 컵", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("파인애플", "IWC 손목시계", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("오렌지", "Kodak Pony 828", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("사과", "보이저3 촬영용 드론", 3 , R.drawable.img_test_post_drone, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("파인애플", "IWC 손목시계2", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("사과", "원터치 텐트 (카즈미/A)2", 2 , R.drawable.img_test_post_photo, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-            add(Post("오렌지", "도자기 컵2", 3 , R.drawable.img_test_post_cup , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("파인애플", "IWC 손목시계3", 1 , R.drawable.img_test_post_clock, "상세설명3", 24000, 1000, "부산", true, R.drawable.img_test_message_pineapple))
-            add(Post("오렌지", "Kodak Pony 828 2", 0 , R.drawable.img_test_post_camera , "상세설명2", 15000, 30000, "대구", false, R.drawable.img_test_message_orange))
-            add(Post("사과", "보이저3 촬영용 드론2", 3 , R.drawable.img_test_post_drone, "상세설명1", 30000, 10000, "서울", false, R.drawable.img_test_message_apple))
-        }
-
-
-
-        val postRVAdapter = PostRVAdapter(posts)
-        binding.homePostListRv.adapter = postRVAdapter
-        binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
-            override fun onItemClick(post: Post) {
-                changePostFragment(post)
-            }
-        })
-
-        postRVAdapter.setPostItemClickListener(object  : PostRVAdapter.PostItemClickListener{
-            override fun onItemClick(post: Post) {
-                changePostFragment(post)
-            }
-        })
-
-        val bannerAdapter = HomeBannerVPAdapter(this)
-        bannerAdapter.addFragment(HomeBannerFragment(R.drawable.img_test_home_banner))
-        bannerAdapter.addFragment(HomeBannerFragment(R.drawable.img_test_home_banner))
-        binding.homeBannerVp.adapter = bannerAdapter
-        binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-
-
-//        //Indicator
-        binding.homeBannerIndicator.setViewPager(binding.homeBannerVp)
-
-//        //category
-        categorys.apply {
-            add("전체")
-            add("캠핑")
-            add("공구")
-            add("스포츠")
-            add("기타")
-        }
-
-        val homeCategoryRVAdapter = HomeCategoryRVAdapter(categorys)
-        binding.homeCategoryRv.adapter = homeCategoryRVAdapter
-        binding.homeCategoryRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        homeCategoryRVAdapter.setHomeCategoryClickListener(object : HomeCategoryRVAdapter.HomeCategoryItemClickListener{
-            override fun onItemClick(name: String) {
-            }
-        })
-
-
-        //postAdd
         binding.homeAddButtonFb.setOnClickListener {
-            (context as MainActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PostAddFragment()).commitAllowingStateLoss()
+            navigateToPostAddFragment()
         }
 
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
+        binding.homeCategoryMoreIv.setOnClickListener {
+            toggleCategoryVisibility()
+        }
 
+        // RecyclerView 초기 설정
+        setupRecyclerViews()
 
         return root
     }
 
-    private fun navigateToHomeSwapFragment() { // 물물교환 페이지로 이동하는 함수
+    private fun setupRecyclerViews() {
+        binding.homePostListRv.layoutManager = LinearLayoutManager(context)
+        getpostsAdapter = HomePostRVAdapter(GetPostsData(emptyList()))
+        binding.homePostListRv.adapter = getpostsAdapter
+
+
+        binding.homeCategoryRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        homeCategoryAdapter = HomeCategoryRVAdapter(GetCategoryManifestResponse(emptyList()))
+        binding.homeCategoryRv.adapter = homeCategoryAdapter
+    }
+
+    private fun toggleCategoryVisibility() {
+        if(categoryMoreVisible) {
+            binding.homeCategorySortLl.visibility = View.GONE
+            categoryMoreVisible = false
+        } else {
+            binding.homeCategorySortLl.visibility = View.VISIBLE
+            categoryMoreVisible = true
+        }
+    }
+
+    private fun navigateToHomeSwapFragment() {
         (activity as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.container, HomeSwapFragment())
-            .addToBackStack(null) // 백스택에 추가하여 뒤로 가기 버튼으로 돌아올 수 있도록 함
+            .addToBackStack(null)
             .commit()
     }
 
     private fun navigateToSearchFragment() {
         (activity as MainActivity).supportFragmentManager.beginTransaction()
-            .replace(R.id.container, SearchFragment()) // R.id.container는 Fragment를 담고 있는 FrameLayout의 ID입니다.
-            .addToBackStack(null) // 뒤로 가기 버튼을 누르면 이전 Fragment로 돌아올 수 있도록 백스택에 추가
+            .replace(R.id.container, SearchFragment())
+            .addToBackStack(null)
             .commit()
     }
 
     private fun navigateToNotificationFragment() {
         (activity as MainActivity).supportFragmentManager.beginTransaction()
-            .replace(R.id.container, NotificationFragment()) // R.id.container는 Fragment를 담고 있는 FrameLayout의 ID입니다.
-            .addToBackStack(null) // 뒤로 가기 버튼을 누르면 이전 Fragment로 돌아올 수 있도록 백스택에 추가
+            .replace(R.id.container, NotificationFragment())
+            .addToBackStack(null)
             .commit()
+    }
+
+    private fun navigateToPostAddFragment() {
+        (activity as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.container, PostAddFragment())
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
     }
 
     override fun onDestroyView() {
@@ -147,17 +115,61 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun changePostFragment(post: Post) {
+    override fun onStart() {
+        super.onStart()
+        refreshData()
+    }
 
+    private fun refreshData() {
+        val homeService = HomeService()
+        homeService.setPostView(this)
+        homeService.getPosts(requireContext())  // 이 메서드가 다시 호출되면 데이터를 새로 가져오게 됩니다.
+        homeService.getCategories(requireContext())
+    }
+
+    private fun changePostFragment(postId: Int) {
         (context as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.container, PostFragment().apply {
                 arguments = Bundle().apply {
-                    val gson = Gson()
-                    val postJson = gson.toJson(post)
-                    putString("post", postJson)
+                    putInt("postId", postId)
                 }
             })
-            .addToBackStack(null) // 백스택에 추가하여 뒤로 가기 버튼으로 돌아올 수 있도록 함
+            .addToBackStack(null)
             .commitAllowingStateLoss()
+    }
+
+    override fun onGetPostsSuccess(result: GetPostsData) {
+        Log.d("HomeFragment", "onGetPostsSuccess called with ${result.posts.size} posts")
+
+        getpostsAdapter.updateData(result)
+
+        getpostsAdapter.setPostItemClickListener(object : HomePostRVAdapter.PostItemClickListener {
+            override fun onItemClick(id: Int) {
+                changePostFragment(id)
+                Log.d("HomeFragment", "click item id : $id")
+            }
+        })
+
+        Log.d("HomeFragment", "Get Posts Success")
+    }
+
+
+
+    override fun onGetPostsFailure(message: String) {
+        Log.d("HomeFragment", "Get Posts failure - $message")
+    }
+
+    override fun onGetCategoriesSuccess(result: GetCategoryManifestResponse) {
+        homeCategoryAdapter.updateData(result)
+        homeCategoryAdapter.setHomeCategoryClickListener(object : HomeCategoryRVAdapter.HomeCategoryItemClickListener {
+            override fun onItemClick(name: String) {
+                // 필요한 작업 추가
+            }
+        })
+        Log.d("HomeFragment", "Get Categories Success")
+    }
+
+    override fun onGetCategoriesFailure(message: String) {
+        Log.d("HomeFragment", "Get Categories failure - $message")
     }
 }

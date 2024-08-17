@@ -1,9 +1,15 @@
 package com.example.billbill_template.Login.signup
 
+import com.example.billbill_template.post.CreatePostRequest
+import com.example.billbill_template.post.CreatePostResponse
+import com.example.billbill_template.post.GetCategoryManifestResponse
+import com.example.billbill_template.post.GetPostByIdResponse
+import com.example.billbill_template.post.GetPostsResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -22,4 +28,16 @@ interface ApiService {
     @POST("/auth/token/refresh")
     fun refreshToken(@Body refreshTokenRequest: RefreshTokenRequest): Call<TokenResponse>
 
+    //Post
+    @GET("/posts")
+    fun getPosts() : Call<GetPostsResponse>
+
+    @GET("/posts/{postId}")
+    fun getPostById(@Path("postId") postId : Int) : Call<GetPostByIdResponse>
+
+    @POST("/posts")
+    fun createPost(@Body createPostRequest: CreatePostRequest) : Call<CreatePostResponse>
+
+    @GET("/manifest/category")
+    fun getCategoryManifest() : Call<GetCategoryManifestResponse>
 }

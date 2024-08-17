@@ -31,6 +31,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // RetrofitClient 초기화
+        RetrofitClient.initialize(this)
+
         // signup_new_btn 클릭 리스너 설정
         binding.signupNewBtn.setOnClickListener {
             // SignUpActivity로 이동
