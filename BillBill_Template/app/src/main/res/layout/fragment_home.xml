@@ -120,6 +120,7 @@
         android:orientation="vertical"
         tools:listitem="@layout/item_home_post"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
