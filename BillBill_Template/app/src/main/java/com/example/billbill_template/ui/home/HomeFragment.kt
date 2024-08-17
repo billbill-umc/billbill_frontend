@@ -8,13 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentHomeBinding
 import com.example.billbill_template.post.GetCategoryManifestResponse
 import com.example.billbill_template.post.GetPostsData
+<<<<<<< HEAD
+=======
+import com.example.billbill_template.post.PostAddFragment
+>>>>>>> origin/main
 import com.example.billbill_template.post.PostFragment
 import com.example.billbill_template.ui.search.NotificationFragment
 import com.example.billbill_template.ui.search.SearchFragment
@@ -27,6 +30,10 @@ class HomeFragment : Fragment(), HomeView {
 
     private lateinit var getpostsAdapter : HomePostRVAdapter
     private lateinit var homeCategoryAdapter : HomeCategoryRVAdapter
+<<<<<<< HEAD
+=======
+    //    private val categorys = ArrayList<String>()
+>>>>>>> origin/main
     private var categoryMoreVisible = false
 
     override fun onCreateView(
@@ -35,7 +42,12 @@ class HomeFragment : Fragment(), HomeView {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+<<<<<<< HEAD
         binding.homeBarterButtonIv.setOnClickListener {
+=======
+
+        binding.homeBarterButtonIv.setOnClickListener { // 물물교환 페이지 클릭 리스너
+>>>>>>> origin/main
             navigateToHomeSwapFragment()
         }
 
@@ -47,6 +59,7 @@ class HomeFragment : Fragment(), HomeView {
             navigateToNotificationFragment()
         }
 
+<<<<<<< HEAD
         binding.homeAddButtonFb.setOnClickListener {
             navigateToPostAddFragment()
         }
@@ -57,6 +70,50 @@ class HomeFragment : Fragment(), HomeView {
 
         // RecyclerView 초기 설정
         setupRecyclerViews()
+=======
+        binding.homeAddButtonFb.setOnClickListener { //게시물 작성 페이지로 전환
+            (context as MainActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.container, PostAddFragment()).commitAllowingStateLoss()
+        }
+
+        binding.homeCategoryMoreIv.setOnClickListener { // 정렬 순서 더보기
+            if(categoryMoreVisible) {
+                binding.homeCategorySortLl.visibility = View.GONE
+                categoryMoreVisible = false
+            } else {
+                binding.homeCategorySortLl.visibility = View.VISIBLE
+                categoryMoreVisible = true
+            }
+        }
+
+
+
+//        val homePostRVAdapter = HomePostRVAdapter(posts)
+//        binding.homePostListRv.adapter = homePostRVAdapter
+//        binding.homePostListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//
+//        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+//            override fun onItemClick(post: GetPostsPosts) {
+//                changePostFragment(post)
+//            }
+//        })
+//
+//        homePostRVAdapter.setPostItemClickListener(object  : HomePostRVAdapter.PostItemClickListener{
+//            override fun onItemClick(oldVersionPost: GetPostsPosts) {
+//                changePostFragment(oldVersionPost)
+//            }
+//        })
+
+        val bannerAdapter = HomeBannerVPAdapter(this)
+        bannerAdapter.addFragment(HomeBannerFragment(R.drawable.img_test_home_banner))
+        bannerAdapter.addFragment(HomeBannerFragment(R.drawable.img_test_home_banner))
+        binding.homeBannerVp.adapter = bannerAdapter
+        binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+
+//        //Indicator
+        binding.homeBannerIndicator.setViewPager(binding.homeBannerVp)
+>>>>>>> origin/main
 
         return root
     }
@@ -117,8 +174,18 @@ class HomeFragment : Fragment(), HomeView {
 
     override fun onStart() {
         super.onStart()
+<<<<<<< HEAD
         refreshData()
     }
+=======
+        val homeService = HomeService()
+        homeService.setPostView(this)
+        homeService.getPosts(requireContext())
+        homeService.getCategories(requireContext())
+    }
+
+    private fun changePostFragment(postId: Int) {
+>>>>>>> origin/main
 
     private fun refreshData() {
         val homeService = HomeService()
@@ -139,6 +206,7 @@ class HomeFragment : Fragment(), HomeView {
     }
 
     override fun onGetPostsSuccess(result: GetPostsData) {
+<<<<<<< HEAD
         Log.d("HomeFragment", "onGetPostsSuccess called with ${result.posts.size} posts")
 
         getpostsAdapter.updateData(result)
@@ -165,11 +233,37 @@ class HomeFragment : Fragment(), HomeView {
             override fun onItemClick(name: String) {
                 // 필요한 작업 추가
             }
+=======
+        getpostsAdapter = HomePostRVAdapter(result)
+        binding.homePostListRv.adapter = getpostsAdapter
+        getpostsAdapter.setPostItemClickListener(object : HomePostRVAdapter.PostItemClickListener {
+            override fun onItemClick(id: Int) {
+                changePostFragment(id)
+                Log.d("HomeFragment", "click item id : ${id}")
+            }
+        })
+        Log.d("HomeFragment", "Get Posts Success")
+    }
+
+    override fun onGetPostsFailure(message: String) {
+        Log.d("HomeFragment", "Get Posts failure - ${message}")
+    }
+
+    override fun onGetCategoriesSuccess(result: GetCategoryManifestResponse) {
+        homeCategoryAdapter= HomeCategoryRVAdapter(result)
+        binding.homeCategoryRv.adapter = homeCategoryAdapter
+        homeCategoryAdapter.setHomeCategoryClickListener(object : HomeCategoryRVAdapter.HomeCategoryItemClickListener{
+            override fun onItemClick(name: String) { }
+>>>>>>> origin/main
         })
         Log.d("HomeFragment", "Get Categories Success")
     }
 
     override fun onGetCategoriesFailure(message: String) {
+<<<<<<< HEAD
         Log.d("HomeFragment", "Get Categories failure - $message")
+=======
+        Log.d("HomeFragment", "Get Categories failure - ${message}")
+>>>>>>> origin/main
     }
 }
