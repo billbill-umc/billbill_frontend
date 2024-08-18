@@ -14,14 +14,20 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostService {
-    @GET("/posts")
-    fun getPosts(
-        @Query("page") page: Int?,
-        @Query("size") size: Int?,
-        @Query("area") area: List<String>,
-        @Query("category") category: Int?
-    ) : Call<GetPostsResponse>
 
+    @GET("/posts")
+    fun getPosts() : Call<GetPostsResponse>
+
+    @GET("/posts")
+    fun getPostsByCategory(@Query("category") category: Int?) : Call<GetPostsResponse>
+
+//    @GET("/posts")
+//    fun getPosts(
+//        @Query("page") page: Int?,
+//        @Query("size") size: Int?,
+//        @Query("area") area: List<String>,
+//        @Query("category") category: Int?
+//    ) : Call<GetPostsResponse>
 
     @GET("/posts/{postId}")
     fun getPostById(@Path("postId") postId : Int) : Call<GetPostByIdResponse>
