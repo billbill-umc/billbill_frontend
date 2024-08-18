@@ -12,6 +12,7 @@ import com.example.billbill_template.ui.home.HomeFragment
 import com.example.billbill_template.ui.message.MessageFragment
 import com.example.billbill_template.ui.mypage.MyPageFragment
 import com.example.billbill_template.Login.signin.LoginActivity
+import com.example.billbill_template.Login.signup.RetrofitClient
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         // 상단바를 숨깁니다
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)

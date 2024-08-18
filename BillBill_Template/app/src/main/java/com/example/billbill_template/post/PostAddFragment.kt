@@ -1,6 +1,7 @@
 package com.example.billbill_template.post
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,13 +15,15 @@ import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostAddBinding
 import com.example.billbill_template.ui.home.HomeFragment
+import com.example.billbill_template.post.CreatePostRequest
+import com.example.billbill_template.post.CreatePostResponse
 import retrofit2.Call
 import retrofit2.Response
 import java.nio.charset.StandardCharsets
 import java.util.Calendar
 
 class PostAddFragment : Fragment() {
-    private var _binding : FragmentPostAddBinding? = null
+    private var _binding: FragmentPostAddBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -38,6 +41,9 @@ class PostAddFragment : Fragment() {
                 .replace(R.id.container, HomeFragment())
                 .commitAllowingStateLoss()
         }
+
+        binding.postAddInputCalendarIv.setOnClickListener{ }
+            // 캘린더 선택 부분 (주석 처리된 부분) - 필요시 구현
 
 //        binding.postAddPhotoRv.setOnClickListener {  }
 
@@ -76,35 +82,42 @@ class PostAddFragment : Fragment() {
                 val depositString = binding.postAddInputDepositEt.text.toString()
                 var deposit = 0
 
-                if(depositString != "") { var deposit = depositString.toInt() }
+                if(depositString.isNotEmpty()) {
+                    deposit = depositString.toInt()
+                }
 
-                val createPostRequest =
-                    CreatePostRequest(title, description, 1, 1, price, deposit, "", 1, 1)
-                RetrofitClient.instance.createPost(createPostRequest).enqueue(object : retrofit2.Callback<CreatePostResponse> {
-                    override fun onResponse(
-                        call: Call<CreatePostResponse>,
-                        response: Response<CreatePostResponse>
-                    ) {
-                        Log.d("PostAddFragment", "Response: ${response.body()}")
+                val token = getToken()
+                if (token != null) {
+                    val createPostRequest = CreatePostRequest(title, description, 1, 1111010100, price, deposit, "NEW", 1721270024, 1721270024)
 
-                        if (response.isSuccessful) {
-                            //홈 화면으로 돌아가기
-                            (context as MainActivity).supportFragmentManager.beginTransaction()
-                                .replace(R.id.container, HomeFragment())
-                                .commitAllowingStateLoss()
-                            showToast("게시글이 업로드 되었습니다.")
-                        } else {
-                            Log.e("PostAddFragment", "게시글 업로드 실패 - 오류: ${response.code()} - ${response.message()}")
-                            showToast("게시글 업로드에 실패했습니다.")
+                    // Retrofit 요청에 토큰을 포함시키는 코드 추가
+                    val client = RetrofitClient.instance
+                    val call = client.createPost(createPostRequest).clone() // 필요시 헤더 추가 후 호출 가능
+
+                    call.enqueue(object : retrofit2.Callback<CreatePostResponse> {
+                        override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
+                            if (response.isSuccessful) {
+                                // 성공 처리
+                                (context as MainActivity).supportFragmentManager.beginTransaction()
+                                    .replace(R.id.container, HomeFragment())
+                                    .commitAllowingStateLoss()
+                                showToast("게시글이 업로드 되었습니다.")
+                                Log.d("PostAddFragment", "Request : ${createPostRequest}")
+                                Log.d("PostAddFragment", "Response : ${response.body()}")
+                            } else {
+                                Log.e("PostAddFragment", "게시글 업로드 실패 - 오류: ${response.code()} - ${response.message()}")
+                                showToast("게시글 업로드에 실패했습니다.")
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<CreatePostResponse>, t: Throwable) {
-                        t.printStackTrace()
-                        showToast("네트워크 오류가 발생했습니다.")
-                    }
-
-                })
+                        override fun onFailure(call: Call<CreatePostResponse>, t: Throwable) {
+                            t.printStackTrace()
+                            showToast("네트워크 오류가 발생했습니다.")
+                        }
+                    })
+                } else {
+                    showToast("로그인이 필요합니다.")
+                }
             }
         }
 
@@ -116,9 +129,13 @@ class PostAddFragment : Fragment() {
         (activity as? MainActivity)?.showBottomNavigation()
         _binding = null
     }
-    // 깨진 문자를 방지하기 위해 UTF-8로 인코딩된 문자열로 Toast 메시지를 표시합니다.
+    private fun getToken(): String? {
+        val sharedPreferences = context?.getSharedPreferences("MyApp", Context.MODE_PRIVATE)
+        return sharedPreferences?.getString("TOKEN", null)
+    }
+
     private fun showToast(message: String) {
         val encodedMessage = String(message.toByteArray(StandardCharsets.UTF_8), StandardCharsets.UTF_8)
-        Toast.makeText(getActivity(), encodedMessage, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, encodedMessage, Toast.LENGTH_SHORT).show()
     }
 }

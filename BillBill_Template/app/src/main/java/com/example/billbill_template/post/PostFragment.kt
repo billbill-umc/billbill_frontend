@@ -18,20 +18,18 @@ import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostBinding
 import com.example.billbill_template.ui.home.HomeCategoryRVAdapter.Companion.categoryList
 import com.example.billbill_template.ui.home.HomeFragment
-import com.example.billbill_template.ui.message.Chatting
+import com.example.billbill_template.ui.message.OldVersionChatting
 import com.example.billbill_template.ui.message.ChattingActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.POST
-import java.util.Date
 
 class PostFragment : Fragment(){
 
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
 
-    private val chatting = Chatting("사과", R.drawable.img_test_message_apple, "마지막 메시지1", "3분 전")
+    private val oldVersionChatting = OldVersionChatting("사과", R.drawable.img_test_message_apple, "마지막 메시지1", "3분 전")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -57,7 +55,6 @@ class PostFragment : Fragment(){
 
 
         val postId = arguments?.getInt("postId")
-//        binding.postTitleTv.setText(POST.)
         RetrofitClient.instance.getPostById(postId?: 0).enqueue(object : retrofit2.Callback<GetPostByIdResponse> {
             override fun onResponse(
                 call: Call<GetPostByIdResponse>,
@@ -87,11 +84,19 @@ class PostFragment : Fragment(){
                             category = categoryList[i - 1]
                         }
                     }
+                    val text : String
                     val now = System.currentTimeMillis() / 1000
                     val created = postDetail?.createAt!!
-                    val day = (now - created) / 86400
+                    val minute = (now - created) / 60
+                    if (minute / 60 <= 0) {
+                        text = "${minute}분 전"
+                    } else if (minute / 60 > 0 && minute / 1440 <= 0) {
+                        text = "${minute/60}시간 전"
+                    } else {
+                        text = "${minute/1440}일 전"
+                    }
+                    binding.postDetailCategoryTv.text = "${category} · ${text} / 서울특별시 강남구"
 
-                    binding.postDetailCategoryTv.text = "${category} · ${day}일 전 / 서울특별시 강남구"
                     Log.d("PostFragment", "게시물을 성공적으로 불러왔습니다.")
                 } else {
                     Log.e("PostFragment", "게시물 불러오기 실패 - 오류: ${response.code()} - ${response.message()}")
@@ -132,7 +137,7 @@ class PostFragment : Fragment(){
                 .replace(R.id.container, PostUserHistoryFragment().apply {
                     arguments = Bundle().apply {
                         val gson = Gson()
-                        val chattingJson = gson.toJson(chatting)
+                        val chattingJson = gson.toJson(oldVersionChatting)
                         putString("chatting", chattingJson)
                     }
                 }).commitAllowingStateLoss()
@@ -140,7 +145,7 @@ class PostFragment : Fragment(){
 
         //'빌리기' 버튼
         binding.postButtonTv.setOnClickListener {
-            changeMessageFragment(chatting)
+            changeMessageFragment(oldVersionChatting)
         }
 
         //좋아요
@@ -173,7 +178,7 @@ class PostFragment : Fragment(){
 
     }
 
-    private fun changeMessageFragment(chatting: Chatting) {
+    private fun changeMessageFragment(oldVersionChatting: OldVersionChatting) {
         val intent = Intent(requireContext(), ChattingActivity::class.java)
         startActivity(intent)
     }
