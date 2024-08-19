@@ -16,19 +16,17 @@ data class GetPostsPosts(
     val author: GetPostsAuthor,
     val itemName : String,
     val description: String,
-    val itemCondition: String,
+    val condition: String,
     val thumbnail: String?,
     val area: Int?,
     val price: Int,
-    val deposit: Int
+    val deposit: Int,
+    val isLent: Boolean,
+    val createAt: Int
 )
 data class GetPostsAuthor(
     val id: Int,
-<<<<<<< HEAD
     val username: String,
-=======
-    val name: String,
->>>>>>> origin/main
     val avatar: String?
 )
 
@@ -41,9 +39,6 @@ data class GetPostByIdResponse(
     val data: GetPostByIdData?
 )
 data class GetPostByIdData(
-    val post: List<GetPostByIdPost>
-)
-data class GetPostByIdPost(
     val id: Int,
     val author: PostAuthor,
     val itemName: String,
@@ -58,15 +53,11 @@ data class GetPostByIdPost(
     val dateEnd: Int?,
     val isLent: Boolean,
     val isFavorite: Boolean,
-    val createAt: Int
+    val createAt: Long
 )
 data class PostAuthor(
     val id: Int,
-<<<<<<< HEAD
     val username: String,
-=======
-    val name: String,
->>>>>>> origin/main
     val avatar: String?
 )
 data class PostImages(

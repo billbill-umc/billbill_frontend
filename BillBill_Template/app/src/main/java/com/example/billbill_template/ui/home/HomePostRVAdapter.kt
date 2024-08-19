@@ -69,7 +69,7 @@ class HomePostRVAdapter(private var result: GetPostsData) : RecyclerView.Adapter
         }
 
         // 아이템 상태 표시
-        holder.condition.text = when (post.itemCondition ?: "UNKNOWN") {
+        holder.condition.text = when (post.condition ?: "UNKNOWN") {
             "NEW" -> "상태: 최상"
             "HIGH" -> "상태: 상"
             "MIDDLE" -> "상태: 중"

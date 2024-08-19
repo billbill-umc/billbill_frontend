@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.billbill_template.Login.signup.RetrofitClient
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostEditBinding
@@ -22,6 +23,8 @@ class PostEditFragment : Fragment() {
 
         // BottomNavigationView 숨기기
         (activity as? MainActivity)?.hideBottomNavigation()
+
+        val postId = arguments?.getInt("postId")
 
         binding.postEditBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()

@@ -18,7 +18,7 @@ data class GetChatting(
 )
 data class GetChattingUser(
     val id: Int,
-    val email: String,
+    val username: String,
     val avatar: String?
 )
 data class GetChattingPost(
@@ -36,6 +36,9 @@ data class GetChattingLastMessage(
 )
 
 //채팅방 생성
+data class CreateChattingRequest(
+    val postId: Int
+)
 data class CreateChattingResponse(
     val success: Boolean,
     val code: String?,
@@ -55,10 +58,15 @@ data class GetChattingByIdResponse(
 )
 data class GetChattingByIdData(
     val id: Int,
-//    val to: , 백엔드 미구현
+    val to: GetChattingByIIdTo,
     val post: GetChattingByIdPost,
     val socketNamespace: String,
     val messages: List<GetChattingByIdMessages>
+)
+data class GetChattingByIIdTo(
+    val id: Int,
+    val username: String,
+    val avatar: String?
 )
 data class GetChattingByIdPost(
     val id: Int,
