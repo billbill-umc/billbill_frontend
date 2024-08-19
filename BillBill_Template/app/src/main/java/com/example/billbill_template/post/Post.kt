@@ -17,15 +17,15 @@ data class GetPostsPosts(
     val itemName : String,
     val description: String,
     val itemCondition: String,
-    val thumbnail: String,
+    val thumbnail: String?,
     val area: Int?,
     val price: Int,
     val deposit: Int
 )
 data class GetPostsAuthor(
     val id: Int,
-    val name: String,
-    val avatar: String
+    val username: String,
+    val avatar: String?
 )
 
 
@@ -50,16 +50,16 @@ data class GetPostByIdPost(
     val price: Int,
     val deposit: Int,
     val area: Int,
-    val dateBegin: Int,
-    val dateEnd: Int,
+    val dateBegin: Int?,
+    val dateEnd: Int?,
     val isLent: Boolean,
     val isFavorite: Boolean,
     val createAt: Int
 )
 data class PostAuthor(
     val id: Int,
-    val name: String,
-    val avatar: String
+    val username: String,
+    val avatar: String?
 )
 data class PostImages(
     val id: Int,
@@ -143,7 +143,10 @@ data class AddPostFavoriteResponse(
     val success: Boolean,
     val code: String?,
     val message: String?,
-    val data: Any?
+    val data: AddPostFavoriteData?
+)
+data class AddPostFavoriteData(
+    val isFavorite: Boolean
 )
 
 

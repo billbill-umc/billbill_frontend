@@ -10,14 +10,14 @@ import com.example.billbill_template.databinding.ItemHomeCategoryBinding
 import com.example.billbill_template.post.GetCategory
 import com.example.billbill_template.post.GetCategoryManifestResponse
 
-<<<<<<< HEAD
-class HomeCategoryRVAdapter(private var result: GetCategoryManifestResponse) :
-=======
-class HomeCategoryRVAdapter(val result: GetCategoryManifestResponse) :
->>>>>>> origin/main
+class HomeCategoryRVAdapter(private var result: GetCategoryManifestResponse, private val homeView: HomeView) :
     RecyclerView.Adapter<HomeCategoryRVAdapter.ViewHolder>() {
 
-    private var selectedPosition = 0
+    private var selectedPosition = -1
+    // -1 -> 첫 상태 = 카테고리 선택 X = 전체 선택
+    // 0 -> 첫 상태 = 첫 번째 카테고리 선택
+
+    val homeService = HomeService()
 
     companion object {
         var categoryList: MutableList<String> = mutableListOf()
@@ -40,11 +40,11 @@ class HomeCategoryRVAdapter(val result: GetCategoryManifestResponse) :
 
     inner class ViewHolder(val binding: ItemHomeCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-<<<<<<< HEAD
         val name: TextView = binding.homeCategoryItemTv
-=======
-            val name : TextView = binding.homeCategoryItemTv
->>>>>>> origin/main
+
+        init {
+            homeService.setHomeView(homeView)
+        }
 
         fun bind(category: GetCategory, isSelected: Boolean) {
             if (isSelected) {
@@ -66,34 +66,30 @@ class HomeCategoryRVAdapter(val result: GetCategoryManifestResponse) :
             }
 
             binding.root.setOnClickListener {
-                if (selectedPosition != adapterPosition) {
+                if (selectedPosition == adapterPosition) { // 선택된 항목이 다시 클릭되면 선택 취소
+                    selectedPosition = -1
+                    notifyItemChanged(adapterPosition)
+                } else { //다른 항목 클릭 시 기존 항목 선택 취소 + 새 항목 선택
                     val previousPosition = selectedPosition
                     selectedPosition = adapterPosition
                     notifyItemChanged(previousPosition)
                     notifyItemChanged(selectedPosition)
                 }
-<<<<<<< HEAD
                 itemClickListener.onItemClick(category.name)
-=======
-                itemClickListener.onItemClick(result.categories[position].name)
->>>>>>> origin/main
+                homeService.getPosts(binding.root.context, selectedPosition)
             }
         }
     }
 
-<<<<<<< HEAD
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-=======
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeCategoryRVAdapter.ViewHolder {
->>>>>>> origin/main
-        val binding = ItemHomeCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ItemHomeCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-<<<<<<< HEAD
     override fun getItemCount(): Int {
-        return result.categories.size
+        return result.categories.size/2 //물물교환 카테고리 제외
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -106,17 +102,6 @@ class HomeCategoryRVAdapter(val result: GetCategoryManifestResponse) :
                 }
                 holder.name.text = category.name
             }
-=======
-    override fun getItemCount(): Int = 14 //현재 14개. '전체' 추가시 +1
-
-    override fun onBindViewHolder(holder: HomeCategoryRVAdapter.ViewHolder, position: Int) {
-        holder.bind(result.categories[position], position == selectedPosition)
-        if (result.categories[position].id < 1000) {
-            if (!categoryList.contains(result.categories[position].name)) {
-                categoryList.add(result.categories[position].name)
-            }
-            holder.name.text = result.categories[position].name
->>>>>>> origin/main
         }
     }
 }
