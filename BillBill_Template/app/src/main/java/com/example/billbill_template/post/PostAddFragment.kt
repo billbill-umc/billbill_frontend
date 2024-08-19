@@ -1,6 +1,5 @@
 package com.example.billbill_template.post
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -8,23 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.billbill_template.Login.signup.RetrofitClient
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostAddBinding
+import com.example.billbill_template.ui.home.HomeCategoryRVAdapter
 import com.example.billbill_template.ui.home.HomeFragment
-import com.example.billbill_template.post.CreatePostRequest
-import com.example.billbill_template.post.CreatePostResponse
+import com.example.billbill_template.ui.home.HomePostRVAdapter
 import retrofit2.Call
 import retrofit2.Response
 import java.nio.charset.StandardCharsets
-import java.util.Calendar
 
-class PostAddFragment : Fragment() {
+class PostAddFragment : Fragment(), PostAddView {
     private var _binding: FragmentPostAddBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var postCategoryRVAdapter: PostCategoryRVAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -62,6 +62,7 @@ class PostAddFragment : Fragment() {
 //            }
 //            DatePickerDialog(this, data, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
         }
+        setupRecyclerViews()
 
         binding.postAddButtonTv.setOnClickListener{
             if (binding.postAddInputTitleEt.text.toString().trim().isEmpty()) {
@@ -132,5 +133,20 @@ class PostAddFragment : Fragment() {
     private fun showToast(message: String) {
         val encodedMessage = String(message.toByteArray(StandardCharsets.UTF_8), StandardCharsets.UTF_8)
         Toast.makeText(activity, encodedMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onGetCategoriesSuccess(result: GetCategoryManifestResponse) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGetCategoriesFailure(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    private fun setupRecyclerViews() {
+
+        binding.postAddCategoryRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        postCategoryRVAdapter = PostCategoryRVAdapter(GetCategoryManifestResponse(emptyList()), this)
+        binding.postAddCategoryRv.adapter = postCategoryRVAdapter
     }
 }

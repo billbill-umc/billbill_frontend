@@ -1,76 +1,45 @@
 package com.example.billbill_template.post
 
+
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import com.example.billbill_template.Login.signup.RetrofitClient
-import okhttp3.Callback
-import okhttp3.Response
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.Response
 
-interface PostService {
+class PostService {
 
-    @GET("/posts")
-    fun getPosts() : Call<GetPostsResponse>
+    private lateinit var postAddView: PostAddView
 
-    @GET("/posts")
-    fun getPostsByCategory(@Query("category") category: Int?) : Call<GetPostsResponse>
+    fun setPostView(postAddView: PostAddView) {
+        this.postAddView = postAddView
+    }
 
-//    @GET("/posts")
-//    fun getPosts(
-//        @Query("page") page: Int?,
-//        @Query("size") size: Int?,
-//        @Query("area") area: List<String>,
-//        @Query("category") category: Int?
-//    ) : Call<GetPostsResponse>
+    fun getCategories(context: Context) {
+        RetrofitClient.instance.getCategoryManifest().enqueue(object : retrofit2.Callback<GetCategoryManifestResponse> {
+            override fun onResponse(
+                call: Call<GetCategoryManifestResponse>,
+                response: Response<GetCategoryManifestResponse>
+            ) {
+                Log.d("HomeService", "Response: ${response.body()}")
+                Log.d("HomeService", "Raw Response: ${response.raw()}")
+                if (response.isSuccessful && response.body() != null) { // Null 체크 추가
+                    val getCategoryResponse: GetCategoryManifestResponse = response.body()!!
+                    Log.d("HomeService", getCategoryResponse.toString())
+                    postAddView.onGetCategoriesSuccess(getCategoryResponse)
+                } else {
+                    Log.e("HomeService", "카테고리 목록 불러오기 실패 - 오류: ${response.code()} - ${response.message()}")
+                    Toast.makeText(context, "카데고리 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-    @GET("/posts/{postId}")
-    fun getPostById(@Path("postId") postId : Int) : Call<GetPostByIdResponse>
+            override fun onFailure(call: Call<GetCategoryManifestResponse>, t: Throwable) {
+                Log.e("HomeService", "getCategories onFailure: ${t.localizedMessage}")
+                t.printStackTrace()
+                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
 
-
-    @POST("/posts")
-    fun createPost(@Body createPostRequest: CreatePostRequest) : Call<CreatePostResponse>
-
-
-
-
-    @PATCH("/posts/{postId}")
-    fun editPost(@Path("postId") postId : Int,
-                 @Body editPostRequest: EditPostRequest) : Call<EditPostResponse>
-
-
-    @DELETE("/posts/{postId}")
-    fun deletePost(@Path("postId") postId : Int) : Call<DeletePostResponse>
-
-
-    @POST("/posts/{postId}/images")
-    fun uploadPostImage(@Header("Content-Type") contentType: String,
-                        @Path("postId") postId : Int) : Call<UploadPostImageResponse>
-
-
-    @DELETE("/posts/{postId}/images/{imageId}")
-    fun deletePostImage(
-        @Path("postId") postId : Int,
-        @Path("imageId") imageId : Int
-    ) : Call<DeletePostImageResponse>
-
-
-
-//    @POST("/posts/{postId}/favorite")
-//    fun addPostFavorite(@Path("postId") postId : Int) : Call<AddPostFavoriteResponse>
-
-
-
-    @GET("/manifest/area")
-    fun getAreaManifest() : Call<GetAreaManifestResponse>
-
-
-    @GET("/manifest/category")
-    fun getCategoryManifest() : Call<GetCategoryManifestResponse>
-
+        })
+    }
 }
