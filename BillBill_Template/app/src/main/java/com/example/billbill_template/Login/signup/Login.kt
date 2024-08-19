@@ -52,12 +52,14 @@ data class TokenResponse(
     val success: Boolean,
     val code: String,
     val message: String,
-    val data: TokenData
+    val data: TokenData,
 )
 
 data class TokenData(
     val accessToken: String,
-    val refreshToken: String
+    val refreshToken: String,
+    val username: String,
+    val avatarUrl: String
 )
 
 

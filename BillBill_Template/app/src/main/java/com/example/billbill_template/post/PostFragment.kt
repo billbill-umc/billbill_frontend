@@ -72,8 +72,8 @@ class PostFragment : Fragment(){
                     binding.postDetailCostTv.text = "${postDetail?.price}원"
                     binding.postDetailDepositTv.text = "보증금 ${postDetail?.deposit}원"
                     binding.postDetailUserTv.text = postDetail?.author?.username
-//                    binding.postDetailUserIv.setImageResource(postDetail?.author?.avatar?.toInt()!!)
-
+                    binding.postDetailUserIv.setImageResource(postDetail?.author?.avatar?.toInt()!!)
+                    
                     val condition = when(postDetail?.itemCondition) {
                         "NEW" -> "최상"
                         "HIGH" -> "상"
