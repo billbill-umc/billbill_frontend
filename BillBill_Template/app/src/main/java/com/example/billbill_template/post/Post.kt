@@ -24,7 +24,11 @@ data class GetPostsPosts(
 )
 data class GetPostsAuthor(
     val id: Int,
+<<<<<<< HEAD
+    val username: String,
+=======
     val name: String,
+>>>>>>> origin/main
     val avatar: String?
 )
 
@@ -58,7 +62,11 @@ data class GetPostByIdPost(
 )
 data class PostAuthor(
     val id: Int,
+<<<<<<< HEAD
+    val username: String,
+=======
     val name: String,
+>>>>>>> origin/main
     val avatar: String?
 )
 data class PostImages(

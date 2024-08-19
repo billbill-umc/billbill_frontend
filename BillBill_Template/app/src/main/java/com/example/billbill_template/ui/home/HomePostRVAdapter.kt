@@ -46,7 +46,7 @@ class HomePostRVAdapter(private var result: GetPostsData) : RecyclerView.Adapter
         // Null 값을 안전하게 처리
         holder.title.text = post.itemName ?: "제목 없음"
         holder.price.text = "${post.price ?: "가격 미정"}원"
-        holder.author.text = post.author.name ?: "작성자 없음"
+        holder.author.text = post.author.username ?: "작성자 없음"
 
         // 썸네일 이미지 로드
         if (!post.thumbnail.isNullOrEmpty()) {

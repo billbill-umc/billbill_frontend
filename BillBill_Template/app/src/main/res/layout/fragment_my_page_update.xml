@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/cp_text"
+        android:id="@+id/mp_cl_text"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:text="완료"
@@ -43,12 +43,18 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:src="@drawable/img_test_home_user"
+<<<<<<< HEAD
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+=======
+>>>>>>> origin/main
         android:layout_marginTop="36dp"
         app:layout_constraintTop_toBottomOf="@+id/mp_ud_text"
         app:layout_constraintStart_toStartOf="@+id/mp_ud_text"
         app:layout_constraintEnd_toEndOf="@+id/mp_ud_text"/>
 
     <TextView
+        android:id="@+id/mp_user_ud_tv"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:text="사진 수정"
@@ -64,7 +70,11 @@
         android:id="@+id/mp_ud_text_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
+        android:text="닉네임"
+=======
         android:text="이름"
+>>>>>>> origin/main
         android:layout_marginTop="83dp"
         android:layout_marginStart="4dp"
         android:textColor="@color/black"
@@ -76,31 +86,9 @@
         android:id="@+id/mp_ud_input_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="이름을 입력해주세요"
+        android:hint="닉네임 입력해주세요"
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/mp_ud_text_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:id="@+id/mp_ud_text_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="아이디"
-        android:layout_marginStart="4dp"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/mp_ud_input_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <EditText
-        android:id="@+id/mp_ud_input_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="아이디를 입력해주세요"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/mp_ud_text_id"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
@@ -109,10 +97,10 @@
         android:id="@+id/mp_ud_text_pw"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="비밀먼호"
+        android:text="비밀번호"
         android:layout_marginStart="4dp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/mp_ud_input_id"
+        app:layout_constraintTop_toBottomOf="@id/mp_ud_input_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

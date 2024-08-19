@@ -37,6 +37,7 @@
         app:layout_constraintStart_toStartOf="@+id/notification_back" />
 
     <TextView
+        android:id="@+id/mp_un_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="김캠핑"

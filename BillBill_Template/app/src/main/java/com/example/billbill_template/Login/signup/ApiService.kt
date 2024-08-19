@@ -16,13 +16,26 @@ import com.example.billbill_template.ui.message.CreateChattingResponse
 import com.example.billbill_template.ui.message.GetChattingById2Response
 import com.example.billbill_template.ui.message.GetChattingByIdResponse
 import com.example.billbill_template.ui.message.GetChattingsResponse
+<<<<<<< HEAD
+import com.example.billbill_template.ui.mypage.PasswordRequest
+import com.example.billbill_template.ui.mypage.ProfileRequest
+import com.example.billbill_template.ui.mypage.UserInfoResponse
+import okhttp3.MultipartBody
+=======
+>>>>>>> origin/main
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+<<<<<<< HEAD
+import retrofit2.http.Multipart
+=======
+>>>>>>> origin/main
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -96,4 +109,28 @@ interface ApiService {
 
     @GET("/manifest/category")
     fun getCategoryManifest() : Call<GetCategoryManifestResponse>
+
+    // 비밀번호 초기화
+    @POST("/reset-password")
+    fun resetPassword(@Body email: EmailRequest): Call<Void>
+
+    // 비밀번호 재설정
+    @PUT("/user/password")
+    fun updatePassword(@Body passwordRequest: PasswordRequest): Call<Void>
+
+    // 프로필 설정
+    @PATCH("/user")
+    fun updateProfile(@Body profileRequest: ProfileRequest): Call<Void>
+
+    // 유저 아바타 업로드
+    @Multipart
+    @POST("/user/avatar")
+    fun uploadAvatar(@Part avatar: MultipartBody.Part): Call<Void>
+
+    // 유저 아바타 삭제
+    @DELETE("/user/avatar")
+    fun deleteAvatar(): Call<Void>
+
+    @GET("/users/me")  // 예시: 서버에서 올바른 엔드포인트를 확인해야 합니다.
+    fun getUserInfo(): Call<UserInfoResponse>
 }

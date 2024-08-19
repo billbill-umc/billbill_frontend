@@ -12,6 +12,7 @@ import com.example.billbill_template.Login.signup.SignUpActivity
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.databinding.ActivityLoginBinding
 import com.example.billbill_template.Login.signup.TokenResponse
+import com.example.billbill_template.ui.mypage.UserInfoResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,20 +24,15 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 상단바를 숨깁니다
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         supportActionBar?.hide()
 
-        // FragmentLoginBinding 사용하여 레이아웃 설정
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // RetrofitClient 초기화
         RetrofitClient.initialize(this)
 
-        // signup_new_btn 클릭 리스너 설정
         binding.signupNewBtn.setOnClickListener {
-            // SignUpActivity로 이동
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
@@ -47,32 +43,27 @@ class LoginActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 val loginRequest = LoginRequest(email, password)
-                RetrofitClient.instance.getToken(loginRequest).enqueue(object : retrofit2.Callback<TokenResponse> {
+                RetrofitClient.instance.getToken(loginRequest).enqueue(object : Callback<TokenResponse> {
                     override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
-                        Log.d("LoginActivity", "Response: ${response.body()}")
-
                         if (response.isSuccessful && response.body()?.data?.accessToken != null) {
                             val token = response.body()?.data?.accessToken
-                            Log.d("LoginActivity", "Token received: $token")
-
                             val sharedPreferences = getSharedPreferences("MyApp", MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("TOKEN", token)
                             editor.apply()
 
+                            // 사용자 정보를 별도로 요청하여 저장
+                            fetchUserInfoAndSave()
+
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
                         } else {
-                            Log.e("LoginActivity", "Login failed: ${response.code()} - ${response.message()}")
                             Toast.makeText(this@LoginActivity, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
 
-
-
                     override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
-                        t.printStackTrace()
                         Toast.makeText(this@LoginActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 })
@@ -80,5 +71,27 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "아이디와 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun fetchUserInfoAndSave() {
+        RetrofitClient.instance.getUserInfo().enqueue(object : Callback<UserInfoResponse> {
+            override fun onResponse(call: Call<UserInfoResponse>, response: Response<UserInfoResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val userInfo = response.body()!!
+                    val sharedPreferences = getSharedPreferences("MyApp", MODE_PRIVATE)
+                    with(sharedPreferences.edit()) {
+                        putString("USERNAME", userInfo.username)
+                        putString("AVATARURL", userInfo.avatarUrl)
+                        apply()
+                    }
+                } else {
+                    Log.e("LoginActivity", "Failed to fetch user info: ${response.code()} ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UserInfoResponse>, t: Throwable) {
+                Log.e("LoginActivity", "Error fetching user info", t)
+            }
+        })
     }
 }
