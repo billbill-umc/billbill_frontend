@@ -16,16 +16,22 @@ import com.example.billbill_template.ui.message.CreateChattingResponse
 import com.example.billbill_template.ui.message.GetChattingById2Response
 import com.example.billbill_template.ui.message.GetChattingByIdResponse
 import com.example.billbill_template.ui.message.GetChattingsResponse
+<<<<<<< HEAD
 import com.example.billbill_template.ui.mypage.PasswordRequest
 import com.example.billbill_template.ui.mypage.ProfileRequest
 import com.example.billbill_template.ui.mypage.UserInfoResponse
 import okhttp3.MultipartBody
+=======
+>>>>>>> origin/main
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+<<<<<<< HEAD
 import retrofit2.http.Multipart
+=======
+>>>>>>> origin/main
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
