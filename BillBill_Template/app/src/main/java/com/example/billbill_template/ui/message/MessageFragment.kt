@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentMessageBinding
@@ -18,7 +19,7 @@ class MessageFragment : Fragment(), MessageView {
     private var _binding: FragmentMessageBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var getMessagesAdapter : MessageRVAdapter
+    private lateinit var getMessagesAdapter: MessageRVAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,16 +30,6 @@ class MessageFragment : Fragment(), MessageView {
             ViewModelProvider(this).get(MessageViewModel::class.java)
 
         _binding = FragmentMessageBinding.inflate(inflater, container, false)
-
-//        val messageRVAdapter = MessageRVAdapter(oldVersionChattings)
-//        binding.messageListRv.adapter = messageRVAdapter
-//        binding.messageListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//
-//        messageRVAdapter.setMessageItemClickListener(object : MessageRVAdapter.MessageItemClickListener{
-//            override fun onItemClick(oldVersionChatting: OldVersionChatting) {
-//                changeMessageFragment(oldVersionChatting)
-//            }
-//        })
 
         binding.messageBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
@@ -61,25 +52,27 @@ class MessageFragment : Fragment(), MessageView {
         messageService.getMessages(requireContext())
     }
 
-    private fun changeChattingActivity(chattingId : Int) {
-        //TODO 구현
+    private fun changeChattingActivity(chatId: Int) {
         val intent = Intent(requireContext(), ChattingActivity::class.java)
+        intent.putExtra("chatId", chatId)
         startActivity(intent)
     }
 
     override fun onGetMessagesSuccess(result: GetChattingsData) {
+        Log.d("MessageFragment", "getChattingData : $result")
         getMessagesAdapter = MessageRVAdapter(result)
         binding.messageListRv.adapter = getMessagesAdapter
+        binding.messageListRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         getMessagesAdapter.setMessageItemClickListener(object : MessageRVAdapter.MessageItemClickListener {
             override fun onItemClick(id: Int) {
                 changeChattingActivity(id)
-                Log.d("MessageFragment", "click item id : ${id}")
+                Log.d("MessageFragment", "click item id : $id")
             }
         })
         Log.d("MessageFragment", "Get Messages Success")
     }
 
     override fun onGetMessagesFailure(message: String) {
-        Log.d("MessageFragment", "Get Messages Failure = ${message}")
+        Log.d("MessageFragment", "Get Messages Failure = $message")
     }
 }

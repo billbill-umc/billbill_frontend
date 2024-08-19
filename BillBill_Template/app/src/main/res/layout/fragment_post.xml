@@ -164,7 +164,7 @@
                 android:id="@+id/post_detail_user_iv"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/img_test_message_apple"
+                android:src="@drawable/img_test_home_user"
                 android:layout_marginEnd="4dp"
                 android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toStartOf="@id/post_detail_user_tv"

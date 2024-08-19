@@ -38,13 +38,8 @@ class PostAddFragment : Fragment() {
 
         binding.postAddBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment())
-                .commitAllowingStateLoss()
+                .replace(R.id.container, HomeFragment()).commitAllowingStateLoss()
         }
-
-        binding.postAddInputCalendarIv.setOnClickListener{ }
-            // 캘린더 선택 부분 (주석 처리된 부분) - 필요시 구현
-
 //        binding.postAddPhotoRv.setOnClickListener {  }
 
         binding.postAddInputCalendarIv.setOnClickListener{

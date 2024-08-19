@@ -39,7 +39,7 @@ class MessageRVAdapter (val result: GetChattingsData) : RecyclerView.Adapter<Mes
     override fun onBindViewHolder(holder: MessageRVAdapter.ViewHolder, position: Int) {
 
         if(result.chattings != null) {
-            holder.userName.text = result.chattings?.get(position)?.user?.id.toString()
+            holder.userName.text = result.chattings?.get(position)?.user?.username
 
             //마지막 메시지가 텍스트일 때
             if(result.chattings?.get(position)?.lastMessage?.type == "MESSAGE") {

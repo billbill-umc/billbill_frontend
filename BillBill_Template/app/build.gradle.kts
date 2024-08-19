@@ -84,4 +84,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")  // Glide 컴파일러 추가
 
+    //socket-io
+    implementation("io.socket:socket.io-client:2.1.0") {
+        exclude("org.json", "json")
+    }
 }

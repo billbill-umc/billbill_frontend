@@ -12,6 +12,7 @@ import com.example.billbill_template.post.GetCategoryManifestResponse
 import com.example.billbill_template.post.GetPostByIdResponse
 import com.example.billbill_template.post.GetPostsResponse
 import com.example.billbill_template.post.UploadPostImageResponse
+import com.example.billbill_template.ui.message.CreateChattingRequest
 import com.example.billbill_template.ui.message.CreateChattingResponse
 import com.example.billbill_template.ui.message.GetChattingById2Response
 import com.example.billbill_template.ui.message.GetChattingByIdResponse
@@ -81,14 +82,14 @@ interface ApiService {
     fun getChattings() : Call<GetChattingsResponse>
 
     @POST("chattings")
-    fun createChatting(@Body postId: Int) : Call<CreateChattingResponse>
+    fun createChatting(@Body createChattingRequest: CreateChattingRequest) : Call<CreateChattingResponse>
 
     @GET("/chattings/{chattingId}")
     fun getChattingById(@Path("chattingId") chattingId : Int) : Call<GetChattingByIdResponse>
 
     @POST("/chattings/{chattingId}/images")
-    fun getChattingById2(@Header("Content-Type") contentType: String,
-                         @Path("chattingId") chattingId : Int) : Call<GetChattingById2Response>
+    fun uploadChattingImage(@Header("Content-Type") contentType: String,
+                            @Path("chattingId") chattingId : Int) : Call<GetChattingById2Response>
 
     //Manifest 조회
     @GET("/manifest/area")

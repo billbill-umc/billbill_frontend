@@ -32,7 +32,7 @@
         android:id="@+id/message_list_detail_tv"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:text="최근 대화"
+        android:text="최근 대화 없음"
         android:textSize="14dp"
         android:textColor="@color/black"
         android:layout_marginStart="16dp"
