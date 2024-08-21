@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="112dp"
     android:foreground="?attr/selectableItemBackground">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -30,14 +30,15 @@
         android:id="@+id/home_post_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
         android:text="상품명"
         android:textSize="16dp"
+        android:layout_marginTop="24dp"
         android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/home_post_photo_iv"
-        app:layout_constraintTop_toTopOf="@id/home_post_photo_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/home_post_cost_tv"
         />
 
     <TextView
@@ -45,23 +46,23 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginStart="16dp"
         android:text="10,000원"
         android:textSize="14dp"
         android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@id/home_post_photo_iv"
-        app:layout_constraintBottom_toBottomOf="@id/home_post_photo_iv" />
+        app:layout_constraintStart_toStartOf="@id/home_post_title_tv"
+        app:layout_constraintTop_toBottomOf="@id/home_post_title_tv"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/home_post_condition_tv"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginStart="8dp"
-        android:text="상"
+        android:text="상태: ?"
         android:textSize="14dp"
         app:layout_constraintStart_toEndOf="@id/home_post_cost_tv"
-        app:layout_constraintBottom_toBottomOf="@id/home_post_photo_iv"/>
+        app:layout_constraintTop_toTopOf="@id/home_post_cost_tv"
+        app:layout_constraintBottom_toBottomOf="@id/home_post_cost_tv"/>
 
     <TextView
         android:id="@+id/home_post_user_tv"

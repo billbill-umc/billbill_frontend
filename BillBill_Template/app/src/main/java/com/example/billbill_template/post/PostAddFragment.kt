@@ -1,41 +1,46 @@
 package com.example.billbill_template.post
 
 import PostAddConditionRVAdapter
+import PostAddPhotoRVAdapter
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.billbill_template.Login.signup.RetrofitClient
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostAddBinding
 import com.example.billbill_template.ui.home.HomeFragment
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.nio.charset.StandardCharsets
 
 class PostAddFragment : Fragment(), PostAddView {
     private var _binding: FragmentPostAddBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var rvImages: RecyclerView
-    private lateinit var ivAddImage: ImageView
-//    private val imageAdapter: PostAddImageAdapter(mutableListOf())
-
     private lateinit var postAddCategoryRVAdapter: PostAddCategoryRVAdapter
     private lateinit var postAddConditionRVAdapter: PostAddConditionRVAdapter
 
     private var conditions : List<String> = listOf("NEW", "HIGH", "MIDDLE", "LOW")
     private var conditionsKor : List<String> = listOf("최상", "상", "중", "하")
+
+    private lateinit var photoAdapter: PostAddPhotoRVAdapter
+    private val photoList: MutableList<Uri> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,6 +50,9 @@ class PostAddFragment : Fragment(), PostAddView {
 
         // BottomNavigationView 숨기기
         (activity as? MainActivity)?.hideBottomNavigation()
+
+        // 기본 이미지 추가
+        photoList.add(Uri.parse("android.resource://com.example.billbill_template/drawable/img_post_add_photo"))
 
         binding.postAddBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
@@ -89,6 +97,12 @@ class PostAddFragment : Fragment(), PostAddView {
                     call.enqueue(object : retrofit2.Callback<CreatePostResponse> {
                         override fun onResponse(call: Call<CreatePostResponse>, response: Response<CreatePostResponse>) {
                             if (response.isSuccessful) {
+                                val postId = response.body()?.data?.createdPostId
+                                if (postId != null) {
+                                    uploadImagesToServer(postId)
+                                } else {
+                                    Log.e("PostAddFragment", "게시글 생성 후 postId를 받아오지 못했습니다.")
+                                }
                                 // 성공 처리
                                 (context as MainActivity).supportFragmentManager.beginTransaction()
                                     .replace(R.id.container, HomeFragment())
@@ -164,7 +178,103 @@ class PostAddFragment : Fragment(), PostAddView {
         binding.postAddConditionRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         postAddConditionRVAdapter = PostAddConditionRVAdapter(conditionsKor, this)
         binding.postAddConditionRv.adapter = postAddConditionRVAdapter
+
+        binding.postAddPhotoRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        photoAdapter = PostAddPhotoRVAdapter(requireContext(), photoList, object : PostAddPhotoRVAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                if (position == 0 && photoList[0].toString().contains("img_post_add_photo")) {
+                    openGallery() // 기본 이미지가 클릭되면 갤러리 열기
+                }
+            }
+
+            override fun onDeleteClick(position: Int) {
+                if (position != 0) { // 기본 이미지가 아닌 경우에만 삭제
+                    photoList.removeAt(position)
+                    photoAdapter.notifyItemRemoved(position)
+                    photoAdapter.notifyItemRangeChanged(position, photoList.size)
+                }
+            }
+        })
+        binding.postAddPhotoRv.adapter = photoAdapter
     }
 
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            val selectedImageUri = data?.data
+            selectedImageUri?.let {
+                // 선택된 이미지를 기본 이미지 다음에 추가
+                photoList.add(it)
+                photoAdapter.notifyItemInserted(photoList.size - 1)
+            }
+        }
+    }
+
+    private fun uploadImagesToServer(postId: Int) {
+        // 전송할 이미지 리스트 필터링 (기본 이미지는 제외)
+        val serverImageList = photoList.filter { !it.toString().contains("img_post_add_photo") }
+
+        // 전송할 이미지가 있는지 확인
+        if (serverImageList.isNotEmpty()) {
+            // 첫 번째 이미지 전송 시작
+            uploadImage(postId, serverImageList, 0)
+        } else {
+            Log.e("PostAddFragment", "전송할 이미지가 없습니다.")
+        }
+    }
+
+    private fun uploadImage(postId: Int, imageList: List<Uri>, index: Int) {
+        // 모든 이미지를 전송했으면 종료
+        if (index >= imageList.size) {
+            Log.d("PostAddFragment", "모든 이미지를 성공적으로 전송했습니다.")
+            return
+        }
+
+        val uri = imageList[index]
+        val file = File(getRealPathFromURI(uri))
+        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), file)
+        val body = MultipartBody.Part.createFormData("image", file.name, requestBody)
+
+        val call = RetrofitClient.instance.uploadPostImage(postId, body)
+        call.enqueue(object : Callback<UploadPostImageResponse> {
+            override fun onResponse(call: Call<UploadPostImageResponse>, response: Response<UploadPostImageResponse>) {
+                if (response.isSuccessful) {
+                    Log.d("PostAddFragment", "이미지 전송 성공: ${file.name}")
+                    // 다음 이미지를 전송
+                    uploadImage(postId, imageList, index + 1)
+                } else {
+                    Log.e("PostAddFragment", "이미지 전송 실패 - 오류: ${response.code()} - ${response.message()}")
+                    showToast("이미지를 전송하지 못했습니다.")
+                }
+            }
+
+            override fun onFailure(call: Call<UploadPostImageResponse>, t: Throwable) {
+                Log.e("PostAddFragment", "이미지 전송 실패: ${t.localizedMessage}")
+                showToast("네트워크 오류가 발생했습니다.")
+            }
+        })
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String {
+        var result = ""
+        val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
+        }
+        return result
+    }
+
+
+    companion object {
+        const val REQUEST_CODE_PICK_IMAGE = 1001
+    }
 
 }

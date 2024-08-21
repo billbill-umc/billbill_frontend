@@ -37,8 +37,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.concurrent.TimeUnit
 
-class PostFragment : Fragment(){
+class PostFragment : Fragment() {
 
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
@@ -57,101 +58,91 @@ class PostFragment : Fragment(){
         // BottomNavigationView 숨기기
         (activity as? MainActivity)?.hideBottomNavigation()
 
-        val photoAdpater = PostPhotoVPAdapter(this)
-        photoAdpater.addFragment(PostPhotoFragment(R.drawable.img_test_post_photo))
-        photoAdpater.addFragment(PostPhotoFragment(R.drawable.img_test_post_tent))
-        binding.postPhotoVp.adapter = photoAdpater
-
-
         binding.postPhotoVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL //좌우 스크롤
-
-        //Indicator
-        binding.postPhotoIndicator.setViewPager(binding.postPhotoVp)
-
 
 
         val postId = arguments?.getInt("postId")
-        thisId = postId?:0
-        RetrofitClient.instance.getPostById(postId?: 0).enqueue(object : retrofit2.Callback<GetPostByIdResponse> {
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onResponse(
-                call: Call<GetPostByIdResponse>,
-                response: Response<GetPostByIdResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.d("PostFragment", "Response: ${response.body()}")
+        thisId = postId ?: 0
+        RetrofitClient.instance.getPostById(postId ?: 0)
+            .enqueue(object : retrofit2.Callback<GetPostByIdResponse> {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun onResponse(
+                    call: Call<GetPostByIdResponse>,
+                    response: Response<GetPostByIdResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d("PostFragment", "Response: ${response.body()}")
 
-                    val postDetail = response.body()?.data
-                    binding.postTitleTv.text = postDetail?.itemName
-                    binding.postDetailTv.text = postDetail?.description
-                    binding.postDetailCostTv.text = "${postDetail?.price}원"
-                    binding.postDetailDepositTv.text = "보증금 ${postDetail?.deposit}원"
-                    binding.postDetailUserTv.text = postDetail?.author?.username
-                    if(postDetail?.author?.avatar.isNullOrEmpty()) {
-                        Glide.with(requireContext())
-                            .load(R.drawable.img_test_home_user) // 기본 이미지 설정
-                            .apply(RequestOptions.circleCropTransform())
-                            .into(binding.postDetailUserIv)
-                    } else {
-                        Glide.with(requireContext())
-                            .load(postDetail?.author?.avatar)
-                            .apply(RequestOptions.circleCropTransform())
-                            .into(binding.postDetailUserIv)
-                    }
-//                    binding.postDetailUserIv.setImageResource(postDetail?.author?.avatar?.toInt()!!)
-                    
-                    val condition = when(postDetail?.itemCondition) {
-                        "NEW" -> "최상"
-                        "HIGH" -> "상"
-                        "MIDDLE" -> "중"
-                        "LOW" -> "하"
-                        else -> "?"
-                    }
-                    binding.postTitleSmallTv.text = "${postDetail?.price}원 ${condition}"
-
-                    var category = "전체"
-                    for(i in 1..categoryList.size) {
-                        if (i == postDetail?.category) {
-                            category = categoryList[i - 1]
+                        val postDetail = response.body()?.data
+                        binding.postTitleTv.text = postDetail?.itemName
+                        binding.postDetailTv.text = postDetail?.description
+                        binding.postDetailCostTv.text = "${postDetail?.price}원"
+                        binding.postDetailDepositTv.text = "보증금 ${postDetail?.deposit}원"
+                        binding.postDetailUserTv.text = postDetail?.author?.username
+                        if (postDetail?.author?.avatar.isNullOrEmpty()) {
+                            Glide.with(requireContext())
+                                .load(R.drawable.img_test_home_user) // 기본 이미지 설정
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(binding.postDetailUserIv)
+                        } else {
+                            Glide.with(requireContext())
+                                .load(postDetail?.author?.avatar)
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(binding.postDetailUserIv)
                         }
-                    }
-                    val text : String
-                    val now = System.currentTimeMillis() / 10000000
-                    val created = postDetail?.createAt!! / 10000000
-                    val minute = (now - created) / 60
-                    if (minute / 60 <= 0) {
-                        text = "${minute}분 전"
-                    } else if (minute / 60 > 0 && minute / 1440 <= 0) {
-                        text = "${minute/60}시간 전"
+
+                        // ViewPager2에 이미지 추가
+                        if(postDetail?.images.isNullOrEmpty()) {
+                            binding.postPhotoVp.visibility = View.GONE
+                            binding.postPhotoIndicator.visibility = View.GONE
+                        } else {
+                            val photoAdapter = PostPhotoVPAdapter(this@PostFragment)
+                            postDetail?.images?.forEach { image ->
+                                val fragment = PostPhotoFragment(image.url)
+                                photoAdapter.addFragment(fragment)
+                            }
+                            binding.postPhotoVp.adapter = photoAdapter
+
+                            if(postDetail?.images?.size!! > 1) {
+                                //Indicator
+                                binding.postPhotoIndicator.setViewPager(binding.postPhotoVp)
+                            }
+                        }
+
+                        val condition = when (postDetail?.itemCondition) {
+                            "NEW" -> "최상"
+                            "HIGH" -> "상"
+                            "MIDDLE" -> "중"
+                            "LOW" -> "하"
+                            else -> "?"
+                        }
+                        binding.postTitleSmallTv.text = "${postDetail?.price}원 ${condition}"
+
+                        var category = "전체"
+                        for (i in 1..categoryList.size) {
+                            if (i == postDetail?.category) {
+                                category = categoryList[i - 1]
+                            }
+                        }
+                        val createAt = postDetail?.createdAt
+                        val timeAgo = getTimeAgo(createAt!!)
+                        binding.postDetailCategoryTv.text = "${category} · ${timeAgo}"
+
+                        Log.d("PostFragment", "게시물을 성공적으로 불러왔습니다.")
                     } else {
-                        text = "${minute/1440}일 전"
+                        Log.e(
+                            "PostFragment",
+                            "게시물 불러오기 실패 - 오류: ${response.code()} - ${response.message()}"
+                        )
+                        Toast.makeText(context, "게시물을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                     }
-//                    // Unix 타임스탬프를 Instant로 변환
-//                    val instant = Instant.ofEpochSecond(1723799035 / 1000)
-//
-//                    // Instant를 시스템의 기본 시간대에 맞춰 변환
-//                    val dateTime = instant.atZone(ZoneId.systemDefault())
-//
-//                    // DateTimeFormatter를 사용해 "yyyy년 MM월 dd일 HH시 mm분" 형식으로 변환
-//                    val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 H시 m분")
-//                    val formattedDateTime = dateTime.format(formatter)
-//
-//                    println("변환된 시간: $formattedDateTime")
-//                    val text = timeAgo(postDetail?.createAt!!)
-                    binding.postDetailCategoryTv.text = "${category} · ${text}"
-
-                    Log.d("PostFragment", "게시물을 성공적으로 불러왔습니다.")
-                } else {
-                    Log.e("PostFragment", "게시물 불러오기 실패 - 오류: ${response.code()} - ${response.message()}")
-                    Toast.makeText(context, "게시물을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            override fun onFailure(call: Call<GetPostByIdResponse>, t: Throwable) {
-                t.printStackTrace()
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<GetPostByIdResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
 
         binding.postBackIv.setOnClickListener {
             // 홈으로 돌아갈 때 BottomNavigationView 보이기
@@ -161,7 +152,7 @@ class PostFragment : Fragment(){
                 .replace(R.id.container, HomeFragment()).commitAllowingStateLoss()
         }
         binding.postMoreIv.setOnClickListener {
-            val isAuthor =  false //TODO
+            val isAuthor = false //TODO
             showPopupMenu(it, isAuthor)
         }
 
@@ -170,79 +161,43 @@ class PostFragment : Fragment(){
             createChatting(thisId)
         }
 
-        //좋아요
-        binding.postLikeOffIv.setOnClickListener{
+        //찜하기
+        binding.postLikeOffIv.setOnClickListener {
             binding.postLikeOnIv.visibility = View.VISIBLE
             binding.postLikeOffIv.visibility = View.GONE
+            addfavorite(thisId)
         }
-        binding.postLikeOnIv.setOnClickListener{
+        binding.postLikeOnIv.setOnClickListener {
             binding.postLikeOnIv.visibility = View.GONE
             binding.postLikeOffIv.visibility = View.VISIBLE
+            addfavorite(thisId)
         }
         return root
     }
+    fun addfavorite(postId: Int) {
+        RetrofitClient.instance.addPostFavorite(postId).enqueue(object : Callback<AddPostFavoriteResponse> {
+            override fun onResponse(
+                call: Call<AddPostFavoriteResponse>,
+                response: Response<AddPostFavoriteResponse>
+            ) {
+                if(response.isSuccessful) {
+                    Log.d("PostFragment", "add favorite response : ${response.body()}")
+                    var isFavorite = response.body()?.data?.isFavorite
+                    if (isFavorite == true) {
+                        Toast.makeText(context, "게시물을 찜했습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "게시물을 찜 목록에서 제거했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e("PostFragment", "찜하기 실패 - 오류: ${response.code()} - ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<AddPostFavoriteResponse>, t: Throwable) {
+                Log.e("PostFragment", "찜하기 실패: ${t.localizedMessage}")
+            }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-//            imageUri = data.data
-//            binding.mpUserUdIv.setImageURI(imageUri)
-//
-//            // Glide를 사용하여 이미지를 동그랗게 로드
-//            imageUri?.let { uri ->
-//                Glide.with(this)
-//                    .load(uri)
-//                    .apply(RequestOptions.circleCropTransform())
-//                    .into(binding.mpUserUdIv)
-//
-//                // 아바타 업로드 API 호출
-//                val file = getFileFromUri(uri)
-//                file?.let {
-//                    val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), it)
-//                    val body = MultipartBody.Part.createFormData("avatar", it.name, requestFile)
-//
-//                    // 아바타 업로드 API 호출
-//                    RetrofitClient.instance.uploadAvatar(body).enqueue(object : Callback<Void> {
-//                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
-//                            if (response.isSuccessful) {
-//                                Toast.makeText(context, "아바타가 업로드되었습니다.", Toast.LENGTH_SHORT).show()
-//                                saveUserInfo(username = binding.mpUdInputName.text.toString(),
-//                                    phoneNumber = binding.mpUdInputTp.text.toString(),
-//                                    avatarUrl = uri.toString())
-//                                parentFragmentManager.popBackStack()  // MyPageFragment로 돌아가기
-//                            } else {
-//                                Toast.makeText(context, "아바타 업로드 실패.", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                        override fun onFailure(call: Call<Void>, t: Throwable) {
-//                            Toast.makeText(context, "네트워크 오류 발생.", Toast.LENGTH_SHORT).show()
-//                        }
-//                    })
-//                } ?: Toast.makeText(context, "파일 경로를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-//
-//    private fun getFileFromUri(uri: Uri): File? {
-//        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-//        val cursor = requireContext().contentResolver.query(uri, filePathColumn, null, null, null)
-//        cursor?.moveToFirst()
-//        val columnIndex = cursor?.getColumnIndex(filePathColumn[0])
-//        val filePath = columnIndex?.let { cursor.getString(it) }
-//        cursor?.close()
-//        return filePath?.let { File(it) }
-//    }
-//
-//    private fun saveUserInfo(username: String, phoneNumber: String, avatarUrl: String?) {
-//        val sharedPreferences = requireContext().getSharedPreferences("MyApp", Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        editor.putString("USERNAME", username)
-//        editor.putString("PHONENUMBER", phoneNumber)
-//        editor.putString("AVATARURL", avatarUrl) // 아바타 URL도 저장
-//        editor.apply()  // 비동기로 저장
-//    }
-
+        })
+    }
 
     fun showPopupMenu(view: View, isAuthor: Boolean) {
         val popupMenu = PopupMenu(view.context, view)
@@ -269,34 +224,46 @@ class PostFragment : Fragment(){
                         .commitAllowingStateLoss()
                     true
                 }
+
                 R.id.post_popup_isLent -> { //대여완료
                     Toast.makeText(view.context, "대여완료 선택", Toast.LENGTH_SHORT).show()
                     true
                 }
+
                 R.id.post_popup_delete -> { //삭제
-                    RetrofitClient.instance.deletePost(thisId).enqueue(object : retrofit2.Callback<DeletePostResponse> {
-                        override fun onResponse(
-                            call: Call<DeletePostResponse>,
-                            response: Response<DeletePostResponse>
-                        ) {
-                            Log.d("PostFragment", "Response: ${response.body()}")
-                            if (response.isSuccessful && response.body() != null) {
-                                Log.d("PostFragment", "게시글을 삭제했습니다.")
-                            } else {
-                                Log.e("PostFragment", "게시글 삭제 실패 - 오류: ${response.code()} - ${response.message()}")
-                                Toast.makeText(context, "게시글을 삭제하지 못했습니다.", Toast.LENGTH_SHORT).show()
+                    RetrofitClient.instance.deletePost(thisId)
+                        .enqueue(object : retrofit2.Callback<DeletePostResponse> {
+                            override fun onResponse(
+                                call: Call<DeletePostResponse>,
+                                response: Response<DeletePostResponse>
+                            ) {
+                                Log.d("PostFragment", "Response: ${response.body()}")
+                                if (response.isSuccessful && response.body() != null) {
+                                    Log.d("PostFragment", "게시글을 삭제했습니다.")
+                                } else {
+                                    Log.e(
+                                        "PostFragment",
+                                        "게시글 삭제 실패 - 오류: ${response.code()} - ${response.message()}"
+                                    )
+                                    Toast.makeText(context, "게시글을 삭제하지 못했습니다.", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             }
-                        }
 
-                        override fun onFailure(call: Call<DeletePostResponse>, t: Throwable) {
-                            Log.e("PostFragment", "delete Posts onFailure: ${t.localizedMessage}")
-                            t.printStackTrace()
-                            Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                        }
+                            override fun onFailure(call: Call<DeletePostResponse>, t: Throwable) {
+                                Log.e(
+                                    "PostFragment",
+                                    "delete Posts onFailure: ${t.localizedMessage}"
+                                )
+                                t.printStackTrace()
+                                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
 
-                    })
+                        })
                     true
                 }
+
                 R.id.post_popup_history -> { //사용자 내역
                     (context as MainActivity).supportFragmentManager.beginTransaction()
                         .replace(R.id.container, PostUserHistoryFragment().apply {
@@ -309,6 +276,7 @@ class PostFragment : Fragment(){
                         }).commitAllowingStateLoss()
                     true
                 }
+
                 else -> false
             }
         }
@@ -318,28 +286,33 @@ class PostFragment : Fragment(){
 
     private fun createChatting(postId: Int) {
         val createChattingRequest = CreateChattingRequest(postId)
-        RetrofitClient.instance.createChatting(createChattingRequest).enqueue(object : retrofit2.Callback<CreateChattingResponse> {
-            override fun onResponse(
-                call: Call<CreateChattingResponse>,
-                response: Response<CreateChattingResponse>
-            ) {
-                Log.d("PostFragment", "Response: ${response.body()}")
-                if (response.isSuccessful && response.body() != null) {
-                    val chatId = response.body()!!.data?.chatId
-                    if (chatId != null) {
-                        changeChattingActivity(chatId)
+        RetrofitClient.instance.createChatting(createChattingRequest)
+            .enqueue(object : retrofit2.Callback<CreateChattingResponse> {
+                override fun onResponse(
+                    call: Call<CreateChattingResponse>,
+                    response: Response<CreateChattingResponse>
+                ) {
+                    Log.d("PostFragment", "Response: ${response.body()}")
+                    if (response.isSuccessful && response.body() != null) {
+                        val chatId = response.body()!!.data?.chatId
+                        if (chatId != null) {
+                            changeChattingActivity(chatId)
+                        }
+                    } else {
+                        Log.e(
+                            "PostFragment",
+                            "채팅방 생성 실패 - 오류: ${response.code()} - ${response.message()}"
+                        )
+                        Toast.makeText(context, "채팅방을 생성하지 못했습니다.", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Log.e("PostFragment", "채팅방 생성 실패 - 오류: ${response.code()} - ${response.message()}")
-                    Toast.makeText(context, "채팅방을 생성하지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
-            }
-            override fun onFailure(call: Call<CreateChattingResponse>, t: Throwable) {
-                Log.e("PostFragment", "createChatting onFailure: ${t.localizedMessage}")
-                t.printStackTrace()
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        })
+
+                override fun onFailure(call: Call<CreateChattingResponse>, t: Throwable) {
+                    Log.e("PostFragment", "createChatting onFailure: ${t.localizedMessage}")
+                    t.printStackTrace()
+                    Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun changeChattingActivity(chatId: Int) {
@@ -348,16 +321,18 @@ class PostFragment : Fragment(){
         intent.putExtra("chatId", chatId)
         startActivity(intent)
     }
+    fun getTimeAgo(createdAt: Long): String {
+        val now = System.currentTimeMillis() / 1000 // 현재 시간을 초 단위로 변환
+        val diff = now - createdAt // 현재 시간과 작성 시간의 차이 (초 단위)
 
-//    fun timeAgo(createAt: Long): String {
-//        val now = System.currentTimeMillis() / 1000 // 현재 시간을 초 단위 Unix 타임스탬프로 변환
-//        val diffInSeconds = now - createAt
-//
-//        return when {
-//            diffInSeconds < 60 -> "$diffInSeconds 초 전"
-//            diffInSeconds < TimeUnit.HOURS.toSeconds(1) -> "${diffInSeconds / 60} 분 전"
-//            diffInSeconds < TimeUnit.DAYS.toSeconds(1) -> "${diffInSeconds / 3600} 시간 전"
-//            else -> "${diffInSeconds / TimeUnit.DAYS.toSeconds(1)} 일 전"
-//        }
-//    }
+        return when {
+            diff < 60 -> "${diff}초 전" // 1분 미만일 때
+            diff < 3600 -> "${diff / 60}분 전" // 1시간 미만일 때
+            diff < 86400 -> "${diff / 3600}시간 전" // 1일 미만일 때
+            diff < 2592000 -> "${diff / 86400}일 전" // 30일 미만일 때
+            diff < 31536000 -> "${diff / 2592000}개월 전" // 1년 미만일 때
+            else -> "${diff / 31536000}년 전" // 1년 이상일 때
+        }
+    }
+
 }

@@ -71,10 +71,9 @@ interface ApiService {
     @DELETE("/posts/{postId}")
     fun deletePost(@Path("postId") postId : Int) : Call<DeletePostResponse>
 
-    //Image
+    @Multipart
     @POST("/posts/{postId}/images")
-    fun uploadPostImage(@Header("Content-Type") contentType: String,
-                        @Path("postId") postId : Int) : Call<UploadPostImageResponse>
+    fun uploadPostImage(@Path("postId") postId : Int, @Part image: MultipartBody.Part) : Call<UploadPostImageResponse>
 
     @DELETE("/posts/{postId}/images/{imageId}")
     fun deletePostImage(@Path("postId") postId : Int,

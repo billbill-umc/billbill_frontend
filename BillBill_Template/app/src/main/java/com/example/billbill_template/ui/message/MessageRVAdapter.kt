@@ -53,19 +53,24 @@ class MessageRVAdapter (val result: GetChattingsData) : RecyclerView.Adapter<Mes
             }
 
             if(result.chattings?.get(position)?.lastMessage != null) {
-                val now = System.currentTimeMillis() / 1000
-                val last = result.chattings?.get(position)?.lastMessage?.createAt!!
-                val minute = now - last / 60
-                if (minute / 60 <= 0) {
-                    holder.lastTime.text = "${minute}분 전"
-                } else if (minute / 60 > 0 && minute / 1440 <= 0) {
-                    holder.lastTime.text = "${minute/60}시간 전"
-                } else {
-                    holder.lastTime.text = "${minute/1440}일 전"
-                }
+                val createdAt = result.chattings.get(position).lastMessage!!.createdAt
+                val timeAgo = getTimeAgo(createdAt)
             }
 
             holder.itemView.setOnClickListener{_itemClickListener.onItemClick(result.chattings!![position].id)}
+        }
+    }
+    fun getTimeAgo(createdAt: Long): String {
+        val now = System.currentTimeMillis() / 1000 // 현재 시간을 초 단위로 변환
+        val diff = now - createdAt // 현재 시간과 작성 시간의 차이 (초 단위)
+
+        return when {
+            diff < 60 -> "${diff}초 전" // 1분 미만일 때
+            diff < 3600 -> "${diff / 60}분 전" // 1시간 미만일 때
+            diff < 86400 -> "${diff / 3600}시간 전" // 1일 미만일 때
+            diff < 2592000 -> "${diff / 86400}일 전" // 30일 미만일 때
+            diff < 31536000 -> "${diff / 2592000}개월 전" // 1년 미만일 때
+            else -> "${diff / 31536000}년 전" // 1년 이상일 때
         }
     }
 }
