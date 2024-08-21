@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingBottom="20dp"
+    >
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-<!--    rv에 아이템 삽입 시 post_add_photo_iv의 visibility 변경해야-->
+    <!--    rv에 아이템 삽입 시 post_add_photo_iv의 visibility 변경해야-->
 
     <ImageView
         android:id="@+id/post_add_photo_iv"
@@ -197,21 +202,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/post_add_input_detail_et"/>
 
+    <TextView
+        android:id="@+id/post_add_category_info_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="상품 카테고리"
+        android:textSize="14dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_add_input_detail_v"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_add_category_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="32.5dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/post_add_input_detail_v"
+        app:layout_constraintTop_toBottomOf="@id/post_add_category_info_tv"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_post_category" />
+
+    <TextView
+        android:id="@+id/post_add_condition_info_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="상품 상태"
+        android:textSize="14dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_add_category_rv"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_add_condition_rv"
@@ -219,13 +246,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="32.5dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/post_add_category_rv"
+        app:layout_constraintTop_toBottomOf="@id/post_add_condition_info_tv"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_home_category" />
 
@@ -246,3 +273,5 @@
         android:background="@drawable/shape_base_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -187,6 +187,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/post_edit_input_detail_et"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_edit_category_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32.5dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_edit_input_detail_v"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_post_category" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_edit_condition_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32.5dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_edit_category_rv"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_home_category" />
+
     <TextView
         android:id="@+id/post_edit_button_tv"
         android:layout_width="125dp"
@@ -198,7 +230,7 @@
         android:paddingTop="13dp"
         android:paddingHorizontal="32.13dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/post_edit_input_detail_v"
+        app:layout_constraintTop_toBottomOf="@id/post_edit_condition_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/shape_base_button"/>

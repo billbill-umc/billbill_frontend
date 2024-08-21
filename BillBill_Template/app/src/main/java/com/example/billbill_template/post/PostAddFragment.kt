@@ -1,21 +1,24 @@
 package com.example.billbill_template.post
 
+import PostAddConditionRVAdapter
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.billbill_template.Login.signup.RetrofitClient
 import com.example.billbill_template.MainActivity
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.FragmentPostAddBinding
-import com.example.billbill_template.ui.home.HomeCategoryRVAdapter
 import com.example.billbill_template.ui.home.HomeFragment
-import com.example.billbill_template.ui.home.HomePostRVAdapter
 import retrofit2.Call
 import retrofit2.Response
 import java.nio.charset.StandardCharsets
@@ -24,14 +27,21 @@ class PostAddFragment : Fragment(), PostAddView {
     private var _binding: FragmentPostAddBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var postCategoryRVAdapter: PostCategoryRVAdapter
+    private lateinit var rvImages: RecyclerView
+    private lateinit var ivAddImage: ImageView
+//    private val imageAdapter: PostAddImageAdapter(mutableListOf())
+
+    private lateinit var postAddCategoryRVAdapter: PostAddCategoryRVAdapter
+    private lateinit var postAddConditionRVAdapter: PostAddConditionRVAdapter
+
+    private var conditions : List<String> = listOf("NEW", "HIGH", "MIDDLE", "LOW")
+    private var conditionsKor : List<String> = listOf("최상", "상", "중", "하")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPostAddBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 
         // BottomNavigationView 숨기기
         (activity as? MainActivity)?.hideBottomNavigation()
@@ -40,28 +50,12 @@ class PostAddFragment : Fragment(), PostAddView {
             (context as MainActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.container, HomeFragment()).commitAllowingStateLoss()
         }
-//        binding.postAddPhotoRv.setOnClickListener {  }
+        binding.postAddPhotoRv.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        binding.postAddInputCalendarIv.setOnClickListener{
-//            var calendar = Calendar.getInstance()
-//            var year = calendar.get(Calendar.YEAR)
-//            var month = calendar.get(Calendar.MONTH)
-//            var day = calendar.get(Calendar.DAY_OF_MONTH)
-//            context?.let { it1 ->
-//                DatePickerDialog(it1, { _, year, month, day ->
-//                    run {
-//                        binding.postAddCalendarResultTv.setText(year.toString() + "." + (month + 1).toString() + "." + day.toString())
-//                    }
-//                }, year, month, day)
-//            }?.show()
-
-//            val cal = Calendar.getInstance()
-//            val data = DatePickerDialog.OnDateSetListener {
-//                view, year, month, day ->
-//                binding.postAddCalendarResultTv.text = "${year}.${month}.${day}"
-//            }
-//            DatePickerDialog(this, data, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
         }
+
+        binding.postAddInputCalendarIv.setOnClickListener{}
         setupRecyclerViews()
 
         binding.postAddButtonTv.setOnClickListener{
@@ -77,6 +71,8 @@ class PostAddFragment : Fragment(), PostAddView {
                 val description = binding.postAddInputDetailEt.text.toString()
                 val depositString = binding.postAddInputDepositEt.text.toString()
                 var deposit = 0
+                var category = postAddCategoryRVAdapter.postAddCategorySelectedPosition + 1
+                var condition = conditions[postAddConditionRVAdapter.postAddConditionSelectedPosition]
 
                 if(depositString.isNotEmpty()) {
                     deposit = depositString.toInt()
@@ -84,7 +80,7 @@ class PostAddFragment : Fragment(), PostAddView {
 
                 val token = getToken()
                 if (token != null) {
-                    val createPostRequest = CreatePostRequest(title, description, 1, 1111010100, price, deposit, "NEW", 1721270024, 1721270024)
+                    val createPostRequest = CreatePostRequest(title, description, category, 1111010100, price, deposit, condition, 1721270024, 1721270024)
 
                     // Retrofit 요청에 토큰을 포함시키는 코드 추가
                     val client = RetrofitClient.instance
@@ -119,6 +115,11 @@ class PostAddFragment : Fragment(), PostAddView {
 
         return root
     }
+
+    override fun onStart() {
+        super.onStart()
+        refreshData()
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         // BottomNavigationView 다시 보이기
@@ -135,18 +136,35 @@ class PostAddFragment : Fragment(), PostAddView {
         Toast.makeText(activity, encodedMessage, Toast.LENGTH_SHORT).show()
     }
 
+    private fun refreshData() {
+        val postAddService = PostAddService()
+        postAddService.setPostAddView(this)
+        postAddService.getCategories(requireContext())
+    }
+
     override fun onGetCategoriesSuccess(result: GetCategoryManifestResponse) {
-        TODO("Not yet implemented")
+        postAddCategoryRVAdapter.updateData(result)
+        postAddCategoryRVAdapter.setPostCategoryClickListener(object : PostAddCategoryRVAdapter.PostCategoryItemClickListener {
+            override fun onItemClick(name: String) {
+                //
+            }
+        })
+        Log.d("PostAddFragment", "Get Categories Success")
     }
 
     override fun onGetCategoriesFailure(message: String) {
-        TODO("Not yet implemented")
+        Log.d("PostAddFragment", "Get Categories Failure - ${message}")
     }
 
     private fun setupRecyclerViews() {
-
         binding.postAddCategoryRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        postCategoryRVAdapter = PostCategoryRVAdapter(GetCategoryManifestResponse(emptyList()), this)
-        binding.postAddCategoryRv.adapter = postCategoryRVAdapter
+        postAddCategoryRVAdapter = PostAddCategoryRVAdapter(GetCategoryManifestResponse(emptyList()), this)
+        binding.postAddCategoryRv.adapter = postAddCategoryRVAdapter
+
+        binding.postAddConditionRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        postAddConditionRVAdapter = PostAddConditionRVAdapter(conditionsKor, this)
+        binding.postAddConditionRv.adapter = postAddConditionRVAdapter
     }
+
+
 }

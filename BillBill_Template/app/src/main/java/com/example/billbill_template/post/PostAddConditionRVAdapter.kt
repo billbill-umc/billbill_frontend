@@ -1,5 +1,3 @@
-package com.example.billbill_template.post
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -7,20 +5,22 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.billbill_template.R
 import com.example.billbill_template.databinding.ItemHomeCategoryBinding
-import com.example.billbill_template.ui.home.HomeCategoryRVAdapter.Companion.categoryList
-import com.example.billbill_template.ui.home.HomeView
+import com.example.billbill_template.post.PostAddService
+import com.example.billbill_template.post.PostAddView
 
-class PostCategoryRVAdapter(private var result: GetCategoryManifestResponse, private val postAddView: PostAddView) : RecyclerView.Adapter<PostCategoryRVAdapter.ViewHolder>() {
+class PostAddConditionRVAdapter(private var conditions: List<String>, private val postAddView: PostAddView) : RecyclerView.Adapter<PostAddConditionRVAdapter.ViewHolder>() {
 
-    private var selectedPosition = 0
+    var postAddConditionSelectedPosition = 0
+    val postAddService = PostAddService()
 
-    val postService = PostService()
-
-    inner class ViewHolder(val binding: ItemHomeCategoryBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemHomeCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
         val name: TextView = binding.homeCategoryItemTv
 
-        fun bind(category: GetCategory, isSelected: Boolean) {
+        init {
+            postAddService.setPostAddView(postAddView)
+        }
+
+        fun bind(conditions: List<String>, isSelected: Boolean) {
             if (isSelected) {
                 binding.homeCategoryCardView.setCardBackgroundColor(
                     ContextCompat.getColor(binding.root.context, android.R.color.black)
@@ -40,13 +40,16 @@ class PostCategoryRVAdapter(private var result: GetCategoryManifestResponse, pri
             }
 
             binding.root.setOnClickListener {
-                if (selectedPosition != adapterPosition) { //다른 항목 클릭 시 기존 항목 선택 취소 + 새 항목 선택
-                    val previousPosition = selectedPosition
-                    selectedPosition = adapterPosition
+                if (postAddConditionSelectedPosition != adapterPosition) { //다른 항목 클릭 시 기존 항목 선택 취소 + 새 항목 선택
+                    val previousPosition = postAddConditionSelectedPosition
+                    postAddConditionSelectedPosition = adapterPosition
                     notifyItemChanged(previousPosition)
-                    notifyItemChanged(selectedPosition)
+                    notifyItemChanged(postAddConditionSelectedPosition)
                 }
-                itemClickListener.onItemClick(category.name)
+                // itemClickListener가 초기화되지 않은 경우를 처리
+                if (::itemClickListener.isInitialized) {
+                    itemClickListener.onItemClick(conditions.toString())
+                }
             }
         }
     }
@@ -61,8 +64,8 @@ class PostCategoryRVAdapter(private var result: GetCategoryManifestResponse, pri
         this.itemClickListener = itemClickListener
     }
 
-    fun updateData(newResult: GetCategoryManifestResponse) {
-        this.result = newResult
+    fun updateData(newResult: List<String>) {
+        this.conditions = newResult
         notifyDataSetChanged()  // 데이터 변경을 어댑터에 알림
     }
 
@@ -72,15 +75,12 @@ class PostCategoryRVAdapter(private var result: GetCategoryManifestResponse, pri
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return result.categories.size/2 //물물교환 카테고리 제외
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(conditions, position == postAddConditionSelectedPosition)
+        holder.name.text = conditions[position]
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (position < result.categories.size / 2) { //물물교환 카테고리 제외
-            val category = result.categories[position]
-            holder.bind(category, position == selectedPosition)
-            holder.name.text = category.name
-        }
+    override fun getItemCount(): Int {
+        return conditions.size
     }
 }

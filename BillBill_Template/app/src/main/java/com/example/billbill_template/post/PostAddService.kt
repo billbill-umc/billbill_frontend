@@ -8,11 +8,11 @@ import com.example.billbill_template.Login.signup.RetrofitClient
 import retrofit2.Call
 import retrofit2.Response
 
-class PostService {
+class PostAddService {
 
     private lateinit var postAddView: PostAddView
 
-    fun setPostView(postAddView: PostAddView) {
+    fun setPostAddView(postAddView: PostAddView) {
         this.postAddView = postAddView
     }
 

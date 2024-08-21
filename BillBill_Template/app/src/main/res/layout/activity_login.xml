@@ -55,7 +55,7 @@
         android:id="@+id/login_text_pw"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="비밀먼호"
+        android:text="비밀번호"
         android:layout_marginStart="4dp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/login_input_id"
