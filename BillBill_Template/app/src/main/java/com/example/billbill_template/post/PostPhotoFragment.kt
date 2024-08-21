@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.billbill_template.databinding.FragmentPostPhotoBinding
 
-class PostPhotoFragment(val imgRes : Int): Fragment() {
+class PostPhotoFragment(val imageUrl: String): Fragment() {
     lateinit var binding : FragmentPostPhotoBinding
 
     override fun onCreateView(
@@ -17,7 +18,11 @@ class PostPhotoFragment(val imgRes : Int): Fragment() {
     ): View? {
         binding = FragmentPostPhotoBinding.inflate(inflater, container, false)
 
-        binding.postPhotoIv.setImageResource(imgRes)
+        // Glide를 사용해 이미지를 로드합니다.
+        Glide.with(this)
+            .load(imageUrl)
+            .into(binding.postPhotoIv)
+
         return binding.root
     }
 }

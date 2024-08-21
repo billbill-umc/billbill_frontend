@@ -45,16 +45,16 @@
 
     <!--    rv에 아이템 삽입 시 post_add_photo_iv의 visibility 변경해야-->
 
-    <ImageView
-        android:id="@+id/post_add_photo_iv"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:src="@drawable/img_post_add_photo"
-        android:layout_marginTop="84dp"
-        android:layout_marginStart="16dp"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/post_add_photo_iv"-->
+<!--        android:layout_width="96dp"-->
+<!--        android:layout_height="96dp"-->
+<!--        android:src="@drawable/img_post_add_photo"-->
+<!--        android:layout_marginTop="84dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"/>-->
 
     <EditText
         android:id="@+id/post_add_input_title_et"

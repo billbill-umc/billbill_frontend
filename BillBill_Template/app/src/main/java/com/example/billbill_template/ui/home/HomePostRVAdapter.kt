@@ -55,7 +55,7 @@ class HomePostRVAdapter(private var result: GetPostsData) : RecyclerView.Adapter
                 .placeholder(R.drawable.img_test_home_list_photo) // 기본 이미지 설정
                 .into(holder.thumbnails)
         } else {
-            holder.thumbnails.setImageResource(R.drawable.img_test_home_list_photo) // 기본 이미지 설정
+            holder.thumbnails.setImageResource(R.drawable.img_post_add_photo) // 기본 이미지 설정
         }
 
         // avatar 이미지 로드

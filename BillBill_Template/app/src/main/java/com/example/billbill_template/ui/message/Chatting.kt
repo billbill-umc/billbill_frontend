@@ -32,7 +32,7 @@ data class GetChattingLastMessage(
     val senderId: Int,
     val type: String,
     val content: String,
-    val createAt: Int
+    val createdAt: Long
 )
 
 //채팅방 생성

@@ -22,7 +22,7 @@ data class GetPostsPosts(
     val price: Int,
     val deposit: Int,
     val isLent: Boolean,
-    val createAt: Int
+    val createdAt: Long
 )
 data class GetPostsAuthor(
     val id: Int,
@@ -49,11 +49,11 @@ data class GetPostByIdData(
     val price: Int,
     val deposit: Int,
     val area: Int,
-    val dateBegin: Int?,
-    val dateEnd: Int?,
+    val dateBegin: Long?,
+    val dateEnd: Long?,
     val isLent: Boolean,
     val isFavorite: Boolean,
-    val createAt: Long
+    val createdAt: Long
 )
 data class PostAuthor(
     val id: Int,
@@ -74,9 +74,9 @@ data class CreatePostRequest(
     val areaCode: Int,
     val price: Int,
     val deposit: Int,
-    val itemCondition: String, //Enum으로 수정 필요
-    val dateBegin: Int,
-    val dateEnd: Int?
+    val itemCondition: String,
+    val dateBegin: Long,
+    val dateEnd: Long?
 )
 data class CreatePostResponse(
     val success: Boolean,
@@ -96,8 +96,8 @@ data class EditPostRequest(
     val price: Int?,
     val deposit: Int?,
     val itemCondition: String?,
-    val dateBegin: Int?,
-    val dateEnd: Int?
+    val dateBegin: Long?,
+    val dateEnd: Long?
 )
 data class EditPostResponse(
     val success: Boolean,
